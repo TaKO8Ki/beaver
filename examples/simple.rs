@@ -1,3 +1,4 @@
+use chrono::{NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -5,6 +6,7 @@ struct Post {
     id: u16,
     title: String,
     approved: bool,
+    created_at: NaiveDateTime,
 }
 
 impl Default for Post {
@@ -13,6 +15,7 @@ impl Default for Post {
             id: 1,
             title: "beaver".to_string(),
             approved: true,
+            created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
         }
     }
 }
@@ -24,7 +27,10 @@ fn main() {
             post.title = format!("post-{}", n);
         });
 
-        ctx.attribute(|post| post.approved = false);
+        ctx.attribute(|post| {
+            post.approved = false;
+            post.created_at = NaiveDate::from_ymd(2020, 2, 2).and_hms(0, 0, 0)
+        });
     });
 
     let post1 = post_factory.create();
