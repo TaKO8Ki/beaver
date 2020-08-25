@@ -61,6 +61,16 @@ fn main() {
 }
 ```
 
+Output:
+
+```sh
+Post { id: 1, title: "post-1", approved: false, created_at: 2020-02-02T00:00:00 }
+Post { id: 2, title: "post-2", approved: false, created_at: 2020-02-02T00:00:00 }
+Post { id: 3, title: "post-3", approved: false, created_at: 2020-02-02T00:00:00 }
+Post { id: 4, title: "post-4", approved: false, created_at: 2020-02-02T00:00:00 }
+Post { id: 5, title: "post-5", approved: false, created_at: 2020-02-02T00:00:00 }
+```
+
 If you use `chrono`, `Cargo.toml` would look like this. 
 
 ```toml
@@ -71,3 +81,7 @@ serde_json = "1.0"
 # you need `serde` feature.
 chrono = { version = "0.4", features = ["serde"] }
 ```
+
+## License
+
+Licensed under MIT license ([LICENSE](LICENSE)).
