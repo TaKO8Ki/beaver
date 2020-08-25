@@ -2,43 +2,53 @@ use serde::{Deserialize, Serialize};
 use std::cell::Cell;
 
 pub struct Factory<T> {
-    pub a: String,
-    pub count: Cell<u16>,
-    pub gen_func: Vec<GenFunc<fn(&mut T, u16)>>,
+    pub model: String,
+    pub sequence: Cell<u16>,
+    pub gen_func: Vec<GenFunc<T>>,
 }
 
-pub enum GenFunc<F> {
-    Sequence(F),
+pub enum GenFunc<T> {
+    Sequence(fn(&mut T, u16)),
+    Attribute(fn(&mut T)),
 }
 
-pub fn new<'a, T>(s: T) -> Factory<T>
+pub fn new<'a, T>(model: T, suite: fn(&mut Factory<T>)) -> Factory<T>
 where
     T: Serialize + Deserialize<'a>,
 {
-    Factory {
-        a: serde_json::to_string(&s).unwrap(),
-        count: Cell::new(1),
+    let mut factory = Factory {
+        model: serde_json::to_string(&model).unwrap(),
+        sequence: Cell::new(1),
         gen_func: vec![],
-    }
+    };
+    suite(&mut factory);
+    factory
 }
 
 impl<'a, T> Factory<T>
 where
     T: Serialize + Deserialize<'a>,
 {
-    pub fn sequence(&mut self, f: fn(&mut T, u16)) -> &mut Self {
+    pub fn sequence(&mut self, from: u16, f: fn(&mut T, u16)) -> &mut Self {
+        self.sequence.set(from);
         self.gen_func.push(GenFunc::Sequence(f));
         self
     }
 
+    pub fn attribute(&mut self, f: fn(&mut T)) -> &mut Self {
+        self.gen_func.push(GenFunc::Attribute(f));
+        self
+    }
+
     pub fn create(&'a self) -> T {
-        let mut model = serde_json::from_str(self.a.as_str()).unwrap();
+        let mut model = serde_json::from_str(self.model.as_str()).unwrap();
         for f in &self.gen_func {
             match f {
-                GenFunc::Sequence(f) => f(&mut model, self.count.get()),
+                GenFunc::Sequence(f) => f(&mut model, self.sequence.get()),
+                GenFunc::Attribute(f) => f(&mut model),
             }
         }
-        self.count.set(self.count.get() + 1);
+        self.sequence.set(self.sequence.get() + 1);
         model
     }
 
