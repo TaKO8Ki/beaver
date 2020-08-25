@@ -17,25 +17,39 @@ serde_json = "1.0"
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-struct User {
+struct Post {
     id: u16,
-    name: String,
-    email: String,
-}
+    title: String,
+    approved: bool,
+}
+
+impl Default for Post {
+    fn default() -> Self {
+        Post {
+            id: 1,
+            title: "beaver".to_string(),
+            approved: true,
+        }
+    }
+}
 
 fn main() {
-    let mut factory = beaver::new(User {
-        id: 1,
-        name: "beaver".to_string(),
-        email: "foo@example.com".to_string(),
+    let post_factory = beaver::new(Post::default(), |ctx| {
+        ctx.sequence(1, |post, n| {
+            post.id = n;
+            post.title = format!("post-{}", n);
+        });
+
+        ctx.attribute(|post| post.approved = false);
     });
-    factory.sequence(|factory, n| {
-        factory.id = n;
-        factory.name = format!("user-{}", n);
-        factory.email = format!("user-{}@example.com", n)
-    });
-    let user1 = factory.create();
-    let user2 = factory.create();
-    println!("{:?}\n{:?}", user1, user2,);
+
+    let post1 = post_factory.create();
+    let post2 = post_factory.create();
+    println!("{:?}\n{:?}", post1, post2);
+
+    let posts = post_factory.create_list(3);
+    for post in posts {
+        println!("{:?}", post);
+    }
 }
 ```
