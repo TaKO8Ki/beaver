@@ -17,6 +17,7 @@ serde_json = "1.0"
 use chrono::{NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 
+// Post needs both of Serialize and Deserialize
 #[derive(Serialize, Deserialize, Debug)]
 struct Post {
     id: u16,
@@ -58,4 +59,15 @@ fn main() {
         println!("{:?}", post);
     }
 }
+```
+
+If you use `chrono`, `Cargo.toml` would look like this. 
+
+```toml
+[dependencies]
+beaver = "0.1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# you need `serde` feature.
+chrono = { version = "0.4", features = ["serde"] }
 ```
