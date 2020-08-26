@@ -1,2 +1,2 @@
 pub mod factory;
-pub use factory::new;
+pub use factory::{new, Factory};

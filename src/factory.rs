@@ -10,11 +10,13 @@ pub struct Factory<T> {
 pub enum GenFunc<T> {
     Sequence(fn(&mut T, u16)),
     Attribute(fn(&mut T)),
+    SubFactory(Box<dyn Fn(&mut T)>),
 }
 
-pub fn new<'a, T>(model: T, suite: fn(&mut Factory<T>)) -> Factory<T>
+pub fn new<'a, T, S>(model: T, suite: S) -> Factory<T>
 where
     T: Serialize + Deserialize<'a>,
+    S: Fn(&mut Factory<T>) -> (),
 {
     let mut factory = Factory {
         model: serde_json::to_string(&model).unwrap(),
@@ -40,22 +42,28 @@ where
         self
     }
 
-    pub fn create(&'a self) -> T {
+    pub fn sub_factory(&mut self, f: Box<dyn Fn(&mut T)>) -> &mut Self {
+        self.gen_func.push(GenFunc::SubFactory(f));
+        self
+    }
+
+    pub fn build(&'a self) -> T {
         let mut model = serde_json::from_str(self.model.as_str()).unwrap();
         for f in &self.gen_func {
             match f {
                 GenFunc::Sequence(f) => f(&mut model, self.sequence.get()),
                 GenFunc::Attribute(f) => f(&mut model),
+                GenFunc::SubFactory(f) => f(&mut model),
             }
         }
         self.sequence.set(self.sequence.get() + 1);
         model
     }
 
-    pub fn create_list(&'a self, number: u16) -> Vec<T> {
+    pub fn build_list(&'a self, number: u16) -> Vec<T> {
         let mut list = vec![];
         for _ in 0..number {
-            list.push(self.create())
+            list.push(self.build())
         }
         list
     }

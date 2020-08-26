@@ -23,7 +23,7 @@ impl Default for Post {
 fn main() {
     let post_factory = beaver::new(Post::default(), |ctx| {
         ctx.sequence(1, |post, n| {
-            post.id = n;
+            post.id = 1;
             post.title = format!("post-{}", n);
         });
 
@@ -33,11 +33,11 @@ fn main() {
         });
     });
 
-    let post1 = post_factory.create();
-    let post2 = post_factory.create();
+    let post1 = post_factory.build();
+    let post2 = post_factory.build();
     println!("{:?}\n{:?}", post1, post2);
 
-    let posts = post_factory.create_list(3);
+    let posts = post_factory.build_list(3);
     for post in posts {
         println!("{:?}", post);
     }
