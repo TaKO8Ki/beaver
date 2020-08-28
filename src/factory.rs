@@ -19,13 +19,12 @@ where
     T: Serialize + Deserialize<'a>,
     S: Fn(&mut T, u16),
 {
-    let factory = Factory {
+    Factory {
         model: serde_json::to_string(&model).unwrap(),
         sequence: Cell::new(1),
         gen_func: suite,
         _maker: PhantomData,
-    };
-    factory
+    }
 }
 
 pub fn sequence(from: u16, n: u16) -> u16 {
