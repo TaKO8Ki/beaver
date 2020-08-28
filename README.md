@@ -8,7 +8,6 @@ A library for setting up Rust objects inspired by factory_bot.
 [dependencies]
 beaver = "0.1.0"
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
 ```
 
 ## Usage
@@ -71,7 +70,6 @@ If you use `chrono`, `Cargo.toml` would look like this.
 [dependencies]
 beaver = "0.1.0"
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
 # you need `serde` feature.
 chrono = { version = "0.4", features = ["serde"] }
 ```
