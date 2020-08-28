@@ -28,7 +28,7 @@ where
 }
 
 pub fn sequence(from: u16, n: u16) -> u16 {
-    from + n
+    from + n - 1
 }
 
 impl<'a, F, T> Factory<'a, F, T>
