@@ -33,24 +33,21 @@ impl Default for User {
 }
 
 fn main() {
-    let user_factory = beaver::new(User::default(), |ctx| {
-        let file_factory = beaver::new(File::default(), |ctx| {
-            ctx.sequence(1, |file, n| {
-                file.id = n;
-                file.path = format!("path/to/file-{}.png", n);
-            });
-        });
+    let file_factory = beaver::new(File::default(), |file, n| {
+        file.id = n;
+        file.path = format!("path/to/file-{}", n)
+    });
 
-        ctx.sequence(100, |user, n| {
-            user.id = n;
-            user.name = format!("user-{}", n);
-        });
-
-        ctx.sub_factory(Box::new(move |user| user.file = file_factory.build()));
+    let user_factory = beaver::new(User::default(), |user, n| {
+        user.id = beaver::sequence(1000, n);
+        user.name = format!("user-{}", beaver::sequence_a("x", n));
+        user.file = file_factory.build()
     });
 
     let users = user_factory.build_list(10);
     for user in users {
         println!("{:?}", user)
     }
+    println!("{:?}", file_factory.build());
+    println!("{:?}", file_factory.build())
 }

@@ -1,61 +1,52 @@
+use crate::variable;
 use serde::{Deserialize, Serialize};
 use std::cell::Cell;
+use std::marker::PhantomData;
 
-pub struct Factory<T> {
-    pub model: String,
-    pub sequence: Cell<u16>,
-    pub gen_func: Vec<GenFunc<T>>,
-}
-
-pub enum GenFunc<T> {
-    Sequence(fn(&mut T, u16)),
-    Attribute(fn(&mut T)),
-    SubFactory(Box<dyn Fn(&mut T)>),
-}
-
-pub fn new<'a, T, S>(model: T, suite: S) -> Factory<T>
+pub struct Factory<'a, F, T>
 where
     T: Serialize + Deserialize<'a>,
-    S: Fn(&mut Factory<T>) -> (),
+    F: Fn(&mut T, u16),
 {
-    let mut factory = Factory {
+    pub model: String,
+    pub sequence: Cell<u16>,
+    pub gen_func: F,
+    _maker: PhantomData<&'a T>,
+}
+
+pub fn new<'a, T, S>(model: T, suite: S) -> Factory<'a, S, T>
+where
+    T: Serialize + Deserialize<'a>,
+    S: Fn(&mut T, u16),
+{
+    let factory = Factory {
         model: serde_json::to_string(&model).unwrap(),
         sequence: Cell::new(1),
-        gen_func: vec![],
+        gen_func: suite,
+        _maker: PhantomData,
     };
-    suite(&mut factory);
     factory
 }
 
-impl<'a, T> Factory<T>
+pub fn sequence(from: u16, n: u16) -> u16 {
+    from + n - 1
+}
+
+pub fn sequence_a(from: &str, n: u16) -> String {
+    variable::ALPHABET
+        [(*variable::ALPHABET_INDEX.get(from).unwrap() as usize + (n - 1) as usize) % 25]
+        .to_string()
+}
+
+impl<'a, F, T> Factory<'a, F, T>
 where
     T: Serialize + Deserialize<'a>,
+    F: Fn(&mut T, u16),
 {
-    pub fn sequence(&mut self, from: u16, f: fn(&mut T, u16)) -> &mut Self {
-        self.sequence.set(from);
-        self.gen_func.push(GenFunc::Sequence(f));
-        self
-    }
-
-    pub fn attribute(&mut self, f: fn(&mut T)) -> &mut Self {
-        self.gen_func.push(GenFunc::Attribute(f));
-        self
-    }
-
-    pub fn sub_factory(&mut self, f: Box<dyn Fn(&mut T)>) -> &mut Self {
-        self.gen_func.push(GenFunc::SubFactory(f));
-        self
-    }
-
     pub fn build(&'a self) -> T {
         let mut model = serde_json::from_str(self.model.as_str()).unwrap();
-        for f in &self.gen_func {
-            match f {
-                GenFunc::Sequence(f) => f(&mut model, self.sequence.get()),
-                GenFunc::Attribute(f) => f(&mut model),
-                GenFunc::SubFactory(f) => f(&mut model),
-            }
-        }
+        let suite = &self.gen_func;
+        suite(&mut model, self.sequence.get());
         self.sequence.set(self.sequence.get() + 1);
         model
     }
