@@ -10,7 +10,7 @@ beaver = "0.1.0"
 serde = { version = "1.0", features = ["derive"] }
 ```
 
-If you want to use [`chrono`](https://docs.rs/chrono/) for your struct fields, `Cargo.toml` would look like this. 
+If you want to use [chrono](https://docs.rs/chrono/) for your struct fields, `Cargo.toml` would look like this. 
 
 ```toml
 [dependencies]
