@@ -1,2 +1,3 @@
 pub mod factory;
-pub use factory::{new, sequence, Factory};
+mod variable;
+pub use factory::{new, sequence, sequence_a, Factory};

@@ -1,3 +1,4 @@
+use crate::variable;
 use serde::{Deserialize, Serialize};
 use std::cell::Cell;
 use std::marker::PhantomData;
@@ -29,6 +30,12 @@ where
 
 pub fn sequence(from: u16, n: u16) -> u16 {
     from + n - 1
+}
+
+pub fn sequence_a(from: &str, n: u16) -> String {
+    variable::ALPHABET
+        [(*variable::ALPHABET_INDEX.get(from).unwrap() as usize + (n - 1) as usize) % 25]
+        .to_string()
 }
 
 impl<'a, F, T> Factory<'a, F, T>

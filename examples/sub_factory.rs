@@ -40,7 +40,7 @@ fn main() {
 
     let user_factory = beaver::new(User::default(), |user, n| {
         user.id = beaver::sequence(1000, n);
-        user.name = format!("user-{}", n);
+        user.name = format!("user-{}", beaver::sequence_a("x", n));
         user.file = file_factory.build()
     });
 
