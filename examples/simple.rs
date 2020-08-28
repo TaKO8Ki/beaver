@@ -23,7 +23,8 @@ impl Default for Post {
 fn main() {
     let post_factory = beaver::new(Post::default(), |post, n| {
         post.id = n;
-        post.title = format!("post-{}", n)
+        post.title = format!("post-{}", n);
+        post.created_at = NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
     });
 
     let post1 = post_factory.build();
