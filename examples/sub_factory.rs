@@ -48,6 +48,4 @@ fn main() {
     for user in users {
         println!("{:?}", user)
     }
-    println!("{:?}", file_factory.build());
-    println!("{:?}", file_factory.build())
 }
