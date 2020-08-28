@@ -12,6 +12,10 @@ serde = { version = "1.0", features = ["derive"] }
 
 ## Usage
 
+- [Simple Factory](#simple-factory)
+- [Sub factory vector](#sub-factory-vector)
+- [Others](#others)
+
 ### [Simple factory](examples/simple.rs)
 
 ```rust
@@ -150,7 +154,7 @@ Post { id: 4, title: "post-4", approved: true, tags: [Tag { id: 10, name: "tag-1
 Post { id: 5, title: "post-5", approved: true, tags: [Tag { id: 13, name: "tag-13" }, Tag { id: 14, name: "tag-14" }, Tag { id: 15, name: "tag-15" }] }
 ```
 
-Other examples.
+### Others
 
 - [sub factory](examples/sub_factory.rs)
 
