@@ -30,9 +30,4 @@ fn main() {
     let post1 = post_factory.build();
     let post2 = post_factory.build();
     println!("{:?}\n{:?}", post1, post2);
-
-    let posts = post_factory.build_list(3);
-    for post in posts {
-        println!("{:?}", post);
-    }
 }
