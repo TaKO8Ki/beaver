@@ -144,7 +144,7 @@ fn main() {
 
 ```
 
-Ootput:
+Output:
 
 ```sh
 Post { id: 1, title: "post-1", approved: true, tags: [Tag { id: 1, name: "tag-1" }, Tag { id: 2, name: "tag-2" }, Tag { id: 3, name: "tag-3" }] }
