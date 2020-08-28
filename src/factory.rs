@@ -45,8 +45,8 @@ where
 {
     pub fn build(&'a self) -> T {
         let mut model = serde_json::from_str(self.model.as_str()).unwrap();
-        let hoge = &self.gen_func;
-        hoge(&mut model, self.sequence.get());
+        let suite = &self.gen_func;
+        suite(&mut model, self.sequence.get());
         self.sequence.set(self.sequence.get() + 1);
         model
     }
