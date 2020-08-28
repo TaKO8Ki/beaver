@@ -10,6 +10,16 @@ beaver = "0.1.0"
 serde = { version = "1.0", features = ["derive"] }
 ```
 
+If you want to use [`chrono`](https://docs.rs/chrono/) for your struct fields, `Cargo.toml` would look like this. 
+
+```toml
+[dependencies]
+beaver = "0.1.0"
+serde = { version = "1.0", features = ["derive"] }
+# you need `serde` feature.
+chrono = { version = "0.4", features = ["serde"] }
+```
+
 ## Usage
 
 - [Simple Factory](#simple-factory)
@@ -68,16 +78,6 @@ Post { id: 2, title: "post-2", approved: true, created_at: 2020-01-01T00:00:00 }
 Post { id: 3, title: "post-3", approved: true, created_at: 2020-01-01T00:00:00 }
 Post { id: 4, title: "post-4", approved: true, created_at: 2020-01-01T00:00:00 }
 Post { id: 5, title: "post-5", approved: true, created_at: 2020-01-01T00:00:00 }
-```
-
-If you want to use `chrono`, `Cargo.toml` would look like this. 
-
-```toml
-[dependencies]
-beaver = "0.1.0"
-serde = { version = "1.0", features = ["derive"] }
-# you need `serde` feature.
-chrono = { version = "0.4", features = ["serde"] }
 ```
 
 ### [Sub factory vector](examples/sub_factory_vector.rs)
