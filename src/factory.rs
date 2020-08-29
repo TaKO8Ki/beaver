@@ -42,18 +42,25 @@ where
     T: Serialize + Deserialize<'a>,
     F: Fn(&mut T, u16),
 {
-    pub fn build(&'a self) -> T {
+    pub fn build<O>(&'a self, f: O) -> T
+    where
+        O: Fn(&mut T),
+    {
         let mut model = serde_json::from_str(self.model.as_str()).unwrap();
         let suite = &self.gen_func;
         suite(&mut model, self.sequence.get());
+        f(&mut model);
         self.sequence.set(self.sequence.get() + 1);
         model
     }
 
-    pub fn build_list(&'a self, number: u16) -> Vec<T> {
+    pub fn build_list<O>(&'a self, number: u16, f: O) -> Vec<T>
+    where
+        O: Fn(&mut T),
+    {
         let mut list = vec![];
         for _ in 0..number {
-            list.push(self.build())
+            list.push(self.build(&f))
         }
         list
     }
