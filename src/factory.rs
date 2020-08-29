@@ -33,7 +33,7 @@ pub fn sequence(from: u16, n: u16) -> u16 {
 
 pub fn sequence_a(from: &str, n: u16) -> String {
     variable::ALPHABET
-        [(*variable::ALPHABET_INDEX.get(from).unwrap() as usize + (n - 1) as usize) % 25]
+        [(*variable::ALPHABET_INDEX.get(from).unwrap() as usize + (n - 1) as usize) % 26]
         .to_string()
 }
 
@@ -63,5 +63,32 @@ where
             list.push(self.build(&f))
         }
         list
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::factory::{sequence, sequence_a};
+
+    #[test]
+    fn test_sequence() {
+        assert_eq!(sequence(2, 1), 2);
+        assert_eq!(sequence(2, 2), 3);
+        assert_eq!(sequence(2, 3), 4);
+    }
+
+    #[test]
+    fn test_sequence_a() {
+        assert_eq!(sequence_a("a", 1), "a");
+        assert_eq!(sequence_a("a", 2), "b");
+        assert_eq!(sequence_a("a", 3), "c");
+
+        assert_eq!(sequence_a("b", 1), "b");
+        assert_eq!(sequence_a("b", 2), "c");
+        assert_eq!(sequence_a("b", 3), "d");
+
+        assert_eq!(sequence_a("z", 1), "z");
+        assert_eq!(sequence_a("z", 2), "a");
+        assert_eq!(sequence_a("z", 3), "b");
     }
 }
