@@ -37,7 +37,7 @@ impl Default for Tag {
 fn main() {
     let tag_factory = beaver::new(Tag::default(), |tag, n| {
         tag.id = n;
-        tag.name = format!("tag-{}", n)
+        tag.name = format!("tag-{}", beaver::sequence_a("x", n))
     });
 
     let post_factory = beaver::new(Post::default(), |post, n| {
