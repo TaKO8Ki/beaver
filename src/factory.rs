@@ -32,9 +32,19 @@ pub fn sequence(from: u16, n: u16) -> u16 {
 }
 
 pub fn sequence_a(from: &str, n: u16) -> String {
-    variable::ALPHABET
-        [(*variable::ALPHABET_INDEX.get(from).unwrap() as usize + (n - 1) as usize) % 26]
-        .to_string()
+    to_alphabet(*variable::ALPHABET_INDEX.get(from).unwrap() as u128 + (n - 1) as u128)
+}
+
+fn to_alphabet(n: u128) -> String {
+    if n > 25 {
+        format!(
+            "{}{}",
+            to_alphabet((n - n % 26) / 26 - 1),
+            variable::ALPHABET[(n % 26) as usize]
+        )
+    } else {
+        variable::ALPHABET[(n % 26) as usize].to_string()
+    }
 }
 
 impl<'a, F, T> Factory<'a, F, T>
@@ -88,7 +98,13 @@ mod tests {
         assert_eq!(sequence_a("b", 3), "d");
 
         assert_eq!(sequence_a("z", 1), "z");
-        assert_eq!(sequence_a("z", 2), "a");
-        assert_eq!(sequence_a("z", 3), "b");
+        assert_eq!(sequence_a("z", 2), "aa");
+        assert_eq!(sequence_a("z", 3), "ab");
+
+        assert_eq!(sequence_a("z", 28), "ba");
+        assert_eq!(sequence_a("z", 677), "zz");
+        assert_eq!(sequence_a("z", 678), "aaa");
+        assert_eq!(sequence_a("z", 975), "all");
+        assert_eq!(sequence_a("z", 9975), "ntp");
     }
 }
