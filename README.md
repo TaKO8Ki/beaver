@@ -61,14 +61,13 @@ fn main() {
         post.created_at = NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
     });
 
-    let post1 = post_factory.build();
-    let post2 = post_factory.build();
+    // overriding attributes of a factory
+    let post1 = post_factory.build(|post| {
+        post.title = "Foo Bar".to_string();
+        post.id = 1
+    });
+    let post2 = post_factory.build(|_| {});
     println!("{:?}\n{:?}", post1, post2);
-
-    let posts = post_factory.build_list(3);
-    for post in posts {
-        println!("{:?}", post);
-    }
 }
 ```
 
@@ -130,20 +129,19 @@ fn main() {
     let post_factory = beaver::new(Post::default(), |post, n| {
         post.id = n;
         post.title = format!("post-{}", n);
-        // use build_list(number)
-        post.tags = tag_factory.build_list(3)
+        // use `build_list`
+        post.tags = tag_factory.build_list(3, |_| {})
     });
 
-    let post1 = post_factory.build();
-    let post2 = post_factory.build();
+    let post1 = post_factory.build(|_| {});
+    let post2 = post_factory.build(|_| {});
     println!("{:?}\n{:?}", post1, post2);
 
-    let posts = post_factory.build_list(3);
+    let posts = post_factory.build_list(3, |_| {});
     for post in posts {
         println!("{:?}", post);
     }
 }
-
 ```
 
 Output:

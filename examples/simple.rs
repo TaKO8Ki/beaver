@@ -27,7 +27,10 @@ fn main() {
         post.created_at = NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
     });
 
-    let post1 = post_factory.build();
-    let post2 = post_factory.build();
+    let post1 = post_factory.build(|post| {
+        post.title = "Foo Bar".to_string();
+        post.id = 1
+    });
+    let post2 = post_factory.build(|_| {});
     println!("{:?}\n{:?}", post1, post2);
 }
