@@ -90,6 +90,7 @@ mod tests {
             title: String,
             approved: bool,
             file: File,
+            tags: Vec<Tag>,
             created_at: NaiveDateTime,
         }
 
@@ -97,6 +98,12 @@ mod tests {
         struct File {
             id: u16,
             path: String,
+        }
+
+        #[derive(Serialize, Deserialize, Debug)]
+        struct Tag {
+            id: u16,
+            name: String,
         }
 
         impl Default for File {
@@ -108,6 +115,15 @@ mod tests {
             }
         }
 
+        impl Default for Tag {
+            fn default() -> Self {
+                Tag {
+                    id: 1,
+                    name: "tag".to_string(),
+                }
+            }
+        }
+
         impl Default for Post {
             fn default() -> Self {
                 Post {
@@ -115,8 +131,15 @@ mod tests {
                     title: "post".to_string(),
                     approved: true,
                     file: File::default(),
+                    tags: vec![],
                     created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
                 }
+            }
+        }
+
+        impl PartialEq for Tag {
+            fn eq(&self, other: &Self) -> bool {
+                self.id == other.id && self.name == other.name
             }
         }
 
@@ -125,6 +148,11 @@ mod tests {
                 self.id == other.id && self.path == other.path
             }
         }
+
+        let tag_factory = new(Tag::default(), |tag, n| {
+            tag.id = n;
+            tag.name = format!("tag-{}", n)
+        });
 
         let file_factory = new(File::default(), |file, n| {
             file.id = n;
@@ -136,12 +164,13 @@ mod tests {
             post.title = format!("post-{}", n);
             post.approved = false;
             post.file = file_factory.build(|_| {});
+            post.tags = tag_factory.build_list(3, |_| {});
             post.created_at = NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
         });
 
         assert_eq!(
             post_factory.model,
-            r#"{"id":1,"title":"post","approved":true,"file":{"id":1,"path":"path/to/beaver.png"},"created_at":"2020-01-01T00:00:00"}"#
+            r#"{"id":1,"title":"post","approved":true,"file":{"id":1,"path":"path/to/beaver.png"},"tags":[],"created_at":"2020-01-01T00:00:00"}"#
         );
         assert_eq!(post_factory.sequence.get(), 1);
 
@@ -158,6 +187,23 @@ mod tests {
                 id: 1,
                 path: "path/to/file-1".to_string()
             }
+        );
+        assert_eq!(
+            post.tags,
+            vec![
+                Tag {
+                    id: 1,
+                    name: "tag-1".to_string()
+                },
+                Tag {
+                    id: 2,
+                    name: "tag-2".to_string()
+                },
+                Tag {
+                    id: 3,
+                    name: "tag-3".to_string()
+                }
+            ]
         );
         assert_eq!(
             post.created_at,
