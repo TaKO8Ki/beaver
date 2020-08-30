@@ -78,7 +78,92 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::factory::{sequence, sequence_a};
+    use crate::factory::{new, sequence, sequence_a};
+    use chrono::{NaiveDate, NaiveDateTime};
+    use serde::{Deserialize, Serialize};
+
+    #[test]
+    fn test_new() {
+        #[derive(Serialize, Deserialize)]
+        struct Post {
+            id: u16,
+            title: String,
+            approved: bool,
+            file: File,
+            created_at: NaiveDateTime,
+        }
+
+        #[derive(Serialize, Deserialize, Debug)]
+        struct File {
+            id: u16,
+            path: String,
+        }
+
+        impl Default for File {
+            fn default() -> Self {
+                File {
+                    id: 1,
+                    path: "path/to/beaver.png".to_string(),
+                }
+            }
+        }
+
+        impl Default for Post {
+            fn default() -> Self {
+                Post {
+                    id: 1,
+                    title: "post".to_string(),
+                    approved: true,
+                    file: File::default(),
+                    created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+                }
+            }
+        }
+
+        impl PartialEq for File {
+            fn eq(&self, other: &Self) -> bool {
+                self.id == other.id && self.path == other.path
+            }
+        }
+
+        let file_factory = new(File::default(), |file, n| {
+            file.id = n;
+            file.path = format!("path/to/file-{}", n)
+        });
+
+        let post_factory = new(Post::default(), |post, n| {
+            post.id = n;
+            post.title = format!("post-{}", n);
+            post.approved = false;
+            post.file = file_factory.build(|_| {});
+            post.created_at = NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
+        });
+
+        assert_eq!(
+            post_factory.model,
+            r#"{"id":1,"title":"post","approved":true,"file":{"id":1,"path":"path/to/beaver.png"},"created_at":"2020-01-01T00:00:00"}"#
+        );
+        assert_eq!(post_factory.sequence.get(), 1);
+
+        let mut post = Post::default();
+        let f = post_factory.gen_func;
+        f(&mut post, 1);
+
+        assert_eq!(post.id, 1);
+        assert_eq!(post.title, "post-1");
+        assert_eq!(post.approved, false);
+        assert_eq!(
+            post.file,
+            File {
+                id: 1,
+                path: "path/to/file-1".to_string()
+            }
+        );
+        assert_eq!(
+            post.created_at,
+            NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
+        );
+    }
 
     #[test]
     fn test_sequence() {
