@@ -41,10 +41,10 @@ fn main() {
     let user_factory = beaver::new(User::default(), |user, n| {
         user.id = beaver::sequence(1000, n);
         user.name = format!("user-{}", beaver::sequence_a("x", n));
-        user.file = file_factory.build()
+        user.file = file_factory.build(|_| {})
     });
 
-    let users = user_factory.build_list(10);
+    let users = user_factory.build_list(10, |_| {});
     for user in users {
         println!("{:?}", user)
     }
