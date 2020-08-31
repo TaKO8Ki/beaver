@@ -60,7 +60,7 @@ jobs:
           command: clippy
 
   test:
-    name: Unit Test
+    name: Test
     runs-on: ubuntu-20.04
     needs: check
     steps:
