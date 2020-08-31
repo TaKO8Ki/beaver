@@ -11,13 +11,38 @@ struct Post {
 }
 
 mod factory {
+    use super::Post;
     use chrono::NaiveDate;
 
     beaver::define! {
-        post (super::Post) {
+        Post => (
+            Post {
+                id: 1,
+                title: "beaver".to_string(),
+                approved: true,
+                created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+            }
+        ) {
             id -> 2,
             title -> "beaver".to_string(),
-            approved -> false,
+            created_at -> NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+        }
+    }
+
+    beaver::def! {
+        use super::Post;
+        use chrono::NaiveDate;
+
+        post => (
+            Post {
+                id: 1,
+                title: "beaver".to_string(),
+                approved: true,
+                created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+            }
+        ) {
+            id -> 2,
+            title -> "beaver".to_string(),
             created_at -> NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
         }
     }
@@ -49,8 +74,8 @@ fn main() {
         post.title = "foo bar".to_string()
     });
 
-    let hoge = factory::clo();
-    hoge(&mut post1);
+    // let hoge = factory::f();
+    // hoge(&mut post1);
 
     println!("{:?}\n{:?}\n{:?}", post1, post2, post3);
 }
