@@ -10,6 +10,19 @@ struct Post {
     created_at: NaiveDateTime,
 }
 
+mod factory {
+    use chrono::NaiveDate;
+
+    beaver::define! {
+        post (super::Post) {
+            id -> 2,
+            title -> "beaver".to_string(),
+            approved -> false,
+            created_at -> NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+        }
+    }
+}
+
 impl Default for Post {
     fn default() -> Self {
         Post {
@@ -29,11 +42,15 @@ fn main() {
     });
 
     // overriding attributes of a factory
-    let post1 = post_factory.build(|_| {});
+    let mut post1 = post_factory.build(|_| {});
     let post2 = post_factory.build(|_| {});
     let post3 = post_factory.build(|post| {
         post.id = 1024;
         post.title = "foo bar".to_string()
     });
+
+    let hoge = factory::clo();
+    hoge(&mut post1);
+
     println!("{:?}\n{:?}\n{:?}", post1, post2, post3);
 }
