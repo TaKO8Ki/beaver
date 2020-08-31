@@ -2,7 +2,7 @@
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/TaKO8Ki/beaver/CI/master)](https://github.com/TaKO8Ki/beaver/actions)
 
-A library for setting up Rust objects inspired by factory_bot.
+beaver is a library for setting up Rust objects inspired by factory_bot.
 
 ## Dependencies
 
