@@ -1,5 +1,3 @@
-use crate::factory::new;
-
 #[macro_export]
 macro_rules! define {
     ($struct:ident => ($default:expr) { $($fname:ident -> $ftype:expr),*,}) => {
@@ -10,6 +8,11 @@ macro_rules! define {
             }
         }
     };
+}
+
+#[macro_export]
+macro_rules! hoge {
+    ($struct:ident { $($fname:ident: $ftype:expr),*, }) => {};
 }
 
 #[macro_export]
@@ -52,7 +55,7 @@ macro_rules! parse {
     };
 
     (
-        tokens = [($default:expr) { $($rest:tt)* }],
+        tokens = [($struct:ident { $($fname:ident: $ftype:expr),*, }) {$($rest:tt)*}],
         imports = $imports:tt,
         name = $name:tt,
         $($args:tt)*
@@ -61,7 +64,8 @@ macro_rules! parse {
             tokens = [],
             imports = $imports,
             name = $name,
-            default = $default,
+            struct_name = $struct,
+            default = $struct {$($fname: $ftype),*,},
             factory = $($rest)*
         }
     };
@@ -79,17 +83,28 @@ macro_rules! factory_impl {
     (
         imports = [$($imports:tt)*],
         name = $factory_name:ident,
+        struct_name = $struct:ident,
         default = $default:expr,
         factory = $($fname:ident -> $ftype:expr),*,
     ) => {
         pub mod $factory_name {
             $($imports)*
+            use serde::{Deserialize, Serialize};
+            use std::marker::PhantomData;
+            use std::cell::Cell;
+            pub use model as $factory_name;
 
             pub struct model;
 
             impl model {
-                fn build() {
-                    $crate::factory::new($default, |m, n| {$(m.$fname = $ftype);*});
+                pub fn new<'a>() -> $crate::factory::Factory<'a, $struct>
+                {
+                    $crate::factory::Factory {
+                        model: serde_json::to_string(&$default).unwrap(),
+                        sequence: Cell::new(1),
+                        gen_func: Box::new(|m: &mut $struct, n| {$(m.$fname = $ftype);*}),
+                        _maker: PhantomData,
+                    }
                 }
             }
         }
