@@ -67,7 +67,6 @@ macro_rules! parse {
             struct_name = $struct_name,
             default_expr = $struct_name {$($fname: $ftype),*,},
             factory_expr = [],
-            factory_ident = [],
         }
     };
 
@@ -78,7 +77,6 @@ macro_rules! parse {
         struct_name = $struct_name:tt,
         default_expr = $default:expr,
         factory_expr = [$($factory_expr:tt)*],
-        factory_ident = [$($factory_ident:tt)*],
         $($args:tt)*
     ) => {
         $crate::parse! {
@@ -88,28 +86,6 @@ macro_rules! parse {
             struct_name = $struct_name,
             default_expr = $default,
             factory_expr = [$($factory_expr)* $fname = $ftype;],
-            factory_ident = [$($factory_ident)*],
-        }
-    };
-
-    (
-        tokens = [$fname:ident -> <$ftype:ident>, $($rest:tt)*],
-        imports = $imports:tt,
-        name = $name:tt,
-        struct_name = $struct_name:tt,
-        default_expr = $default:expr,
-        factory_expr = [$($factory_expr:tt)*],
-        factory_ident = [$($factory_ident:tt)*],
-        $($args:tt)*
-    ) => {
-        $crate::parse! {
-            tokens = [$($rest)*],
-            imports = $imports,
-            name = $name,
-            struct_name = $struct_name,
-            default_expr = $default,
-            factory_expr = [$($factory_expr)*],
-            factory_ident = [$($factory_ident)* $fname = $ftype;],
         }
     };
 
@@ -129,7 +105,6 @@ macro_rules! factory_impl {
         struct_name = $struct:ident,
         default_expr = $default:expr,
         factory_expr = [$($expr_name:ident = $expr_type:expr;)*],
-        factory_ident = [$($ident_name:ident = $ident_type:ident;)*],
     ) => {
         pub mod $factory_name {
             $($imports)*
@@ -144,7 +119,7 @@ macro_rules! factory_impl {
                 pub fn new<'a>() -> $crate::factory::Factory<'a, $struct>
                 {
                     $crate::factory::Factory {
-                        model: serde_json::to_string(&$default).unwrap(),
+                        model: serde_json::to_string(&$struct {$($expr_name: $expr_type(1),)*}).unwrap(),
                         sequence: Cell::new(1),
                         gen_func: Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*}),
                         _maker: PhantomData,

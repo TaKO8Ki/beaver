@@ -43,6 +43,7 @@ mod factory {
         ) {
             id -> (|n| n),
             title -> (|n| format!("{}", n)),
+            approved -> (|_| false),
             created_at -> (|_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)),
         }
     }
