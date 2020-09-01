@@ -11,10 +11,11 @@ pub struct Post {
 }
 
 mod factory {
-    beaver::define! {
-        use crate::Post;
-        use chrono::NaiveDate;
+    use crate::Post;
+    use chrono::NaiveDate;
 
+    // factory definition
+    beaver::define! {
         PostFactory (Post) {
             id -> |n| n,
             title -> |n| format!("{}", n),
@@ -30,5 +31,10 @@ fn main() {
     let post_factory = PostFactory::new();
     let post1 = post_factory.build(|_| {});
     let post2 = post_factory.build(|_| {});
-    println!("{:?}\n{:?}", post1, post2);
+    // overriding attributes of a factory
+    let post3 = post_factory.build(|post| {
+        post.id = 1024;
+        post.title = "foo bar".to_string()
+    });
+    println!("{:?}\n{:?}\n{:?}", post1, post2, post3);
 }

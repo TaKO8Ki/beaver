@@ -2,7 +2,7 @@ use crate::factory::PostFactory;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Post {
+pub struct Post {
     id: u16,
     title: String,
     approved: bool,
@@ -10,26 +10,26 @@ struct Post {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Tag {
+pub struct Tag {
     id: u16,
     name: String,
 }
 
 mod factory {
-    beaver::define! {
-        use crate::Post;
+    use crate::Post;
+    use crate::Tag;
 
+    beaver::define! {
         PostFactory (Post) {
             id -> |n| n,
-            title -> |n| format!("user-{}", n),
-            approved -> |_| false,
+            title -> |n| format!("post-{}", n),
+            approved -> |_| true,
+            // use `build_list`
             tags -> |n| TagFactory::build_list(3, n),
         }
     }
 
     beaver::define! {
-        use crate::Tag;
-
         TagFactory (Tag) {
             id -> |n| beaver::sequence(100, n),
             name -> |n| format!("tag-{}", n),
@@ -39,6 +39,10 @@ mod factory {
 
 fn main() {
     let post_factory = PostFactory::new();
+    let post1 = post_factory.build(|_| {});
+    let post2 = post_factory.build(|_| {});
+    println!("{:?}\n{:?}", post1, post2);
+
     let posts = post_factory.build_list(3, |_| {});
     for post in posts {
         println!("{:?}", post);

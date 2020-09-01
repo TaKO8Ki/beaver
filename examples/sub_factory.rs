@@ -15,9 +15,10 @@ pub struct User {
 }
 
 mod factory {
-    beaver::define! {
-        use crate::User;
+    use crate::File;
+    use crate::User;
 
+    beaver::define! {
         UserFactory (User) {
             id -> |n| n,
             name -> |n| format!("user-{}", n),
@@ -26,8 +27,6 @@ mod factory {
     }
 
     beaver::define! {
-        use crate::File;
-
         FileFactory (File) {
             id -> |n| n,
             path -> |n| format!("path/to/file-{}", n),
