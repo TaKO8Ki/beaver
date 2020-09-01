@@ -1,4 +1,4 @@
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 // Post needs both of Serialize and Deserialize
@@ -20,17 +20,6 @@ mod factory {
             title -> |n| format!("{}", n),
             approved -> |_| false,
             created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
-        }
-    }
-}
-
-impl Default for Post {
-    fn default() -> Self {
-        Post {
-            id: 1,
-            title: "beaver".to_string(),
-            approved: true,
-            created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
         }
     }
 }

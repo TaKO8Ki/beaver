@@ -1,6 +1,5 @@
 use crate::variable;
 use serde::{Deserialize, Serialize};
-use serde_json::to_string;
 use std::cell::Cell;
 use std::marker::PhantomData;
 
@@ -19,7 +18,7 @@ where
     T: Serialize + Deserialize<'a>,
 {
     Factory {
-        model: to_string(&model).unwrap(),
+        model: serde_json::to_string(&model).unwrap(),
         sequence: Cell::new(1),
         gen_func: suite,
         _maker: PhantomData,

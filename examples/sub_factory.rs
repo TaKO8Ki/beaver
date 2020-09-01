@@ -14,25 +14,6 @@ pub struct User {
     file: File,
 }
 
-impl Default for File {
-    fn default() -> Self {
-        File {
-            id: 1,
-            path: "path/to/beaver.png".to_string(),
-        }
-    }
-}
-
-impl Default for User {
-    fn default() -> Self {
-        User {
-            id: 1,
-            name: "beaver".to_string(),
-            file: File::default(),
-        }
-    }
-}
-
 mod factory {
     beaver::define! {
         use crate::User;

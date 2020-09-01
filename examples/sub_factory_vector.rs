@@ -1,3 +1,4 @@
+use crate::factory::PostFactory;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -12,26 +13,6 @@ struct Post {
 struct Tag {
     id: u16,
     name: String,
-}
-
-impl Default for Post {
-    fn default() -> Self {
-        Post {
-            id: 1,
-            title: "post".to_string(),
-            approved: true,
-            tags: vec![],
-        }
-    }
-}
-
-impl Default for Tag {
-    fn default() -> Self {
-        Tag {
-            id: 1,
-            name: "tag".to_string(),
-        }
-    }
 }
 
 mod factory {
@@ -55,8 +36,6 @@ mod factory {
         }
     }
 }
-
-use crate::factory::PostFactory;
 
 fn main() {
     let post_factory = PostFactory::new();
