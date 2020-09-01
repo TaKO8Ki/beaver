@@ -37,13 +37,12 @@ impl Default for Tag {
 mod factory {
     beaver::define! {
         use crate::Post;
-        use crate::factory::TagFactory::*;
 
         PostFactory (Post) {
             id -> |n| n,
             title -> |n| format!("user-{}", n),
             approved -> |_| false,
-            tags -> |n| vec![TagFactory::build(n)],
+            tags -> |n| TagFactory::build_list(3, n),
         }
     }
 
@@ -51,13 +50,13 @@ mod factory {
         use crate::Tag;
 
         TagFactory (Tag) {
-            id -> |n| n,
+            id -> |n| beaver::sequence(100, n),
             name -> |n| format!("tag-{}", n),
         }
     }
 }
 
-use crate::factory::PostFactory::*;
+use crate::factory::PostFactory;
 
 fn main() {
     let post_factory = PostFactory::new();

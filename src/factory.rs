@@ -1,5 +1,6 @@
 use crate::variable;
 use serde::{Deserialize, Serialize};
+use serde_json::to_string;
 use std::cell::Cell;
 use std::marker::PhantomData;
 
@@ -13,18 +14,17 @@ where
     pub _maker: PhantomData<&'a T>,
 }
 
-// pub fn new<'a, T, S>(model: T, suite: S) -> Factory<'a, S, T>
-// where
-//     T: Serialize + Deserialize<'a>,
-//     S: Fn(&mut T, u16),
-// {
-// Factory {
-//     model: serde_json::to_string(&model).unwrap(),
-//     sequence: Cell::new(1),
-//     gen_func: suite,
-//     _maker: PhantomData,
-// }
-// }
+pub fn new<'a, T>(model: T, suite: Box<dyn Fn(&mut T, u16)>) -> Factory<'a, T>
+where
+    T: Serialize + Deserialize<'a>,
+{
+    Factory {
+        model: to_string(&model).unwrap(),
+        sequence: Cell::new(1),
+        gen_func: suite,
+        _maker: PhantomData,
+    }
+}
 
 pub fn sequence(from: u16, n: u16) -> u16 {
     from + n - 1
@@ -81,6 +81,17 @@ where
         let mut list = vec![];
         for _ in 0..number {
             list.push(self.build(&f))
+        }
+        list
+    }
+
+    pub fn build_list_n<O>(&'a self, number: u16, n: u16, f: O) -> Vec<T>
+    where
+        O: Fn(&mut T),
+    {
+        let mut list = vec![];
+        for i in number * (n - 1) + 1..number * (n - 1) + number + 1 {
+            list.push(self.build_n(i, &f))
         }
         list
     }

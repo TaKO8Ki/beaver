@@ -1,4 +1,4 @@
-use factory::UserFactory::*;
+use factory::UserFactory;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -36,7 +36,6 @@ impl Default for User {
 mod factory {
     beaver::define! {
         use crate::User;
-        use crate::factory::FileFactory::*;
 
         UserFactory (User) {
             id -> |n| n,

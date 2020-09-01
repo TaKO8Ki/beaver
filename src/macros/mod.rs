@@ -1,7 +1,7 @@
 #[macro_export]
 macro_rules! define {
     ($($tokens:tt)*) => {
-        $crate::parse! {
+        $crate::beaver_parse! {
             tokens = [$($tokens)*],
             imports = [],
             name = unknown,
@@ -10,13 +10,14 @@ macro_rules! define {
 }
 
 #[macro_export]
-macro_rules! parse {
+#[doc(hidden)]
+macro_rules! beaver_parse {
     (
         tokens = [use $($import:tt)::+; $($rest:tt)*],
         imports = [$($imports:tt)*],
         $($args:tt)*
     ) => {
-        $crate::parse! {
+        $crate::beaver_parse! {
             tokens = [$($rest)*],
             imports = [$($imports)* use $($import)::+;],
             $($args)*
@@ -29,7 +30,7 @@ macro_rules! parse {
         name = $ignore:tt,
         $($args:tt)*
     ) => {
-        $crate::parse! {
+        $crate::beaver_parse! {
             tokens = [$($rest)*],
             imports = $imports,
             name = $name,
@@ -43,7 +44,7 @@ macro_rules! parse {
         name = $name:tt,
         $($args:tt)*
     ) => {
-        $crate::parse! {
+        $crate::beaver_parse! {
             tokens = [$($rest)*],
             imports = $imports,
             name = $name,
@@ -60,7 +61,7 @@ macro_rules! parse {
         factory_expr = [$($factory_expr:tt)*],
         $($args:tt)*
     ) => {
-        $crate::parse! {
+        $crate::beaver_parse! {
             tokens = [],
             imports = $imports,
             name = $name,
@@ -78,6 +79,7 @@ macro_rules! parse {
 }
 
 #[macro_export]
+#[doc(hidden)]
 macro_rules! factory_impl {
     (
         imports = [$($imports:tt)*],
@@ -85,36 +87,24 @@ macro_rules! factory_impl {
         struct_name = $struct:ident,
         factory_expr = [$($expr_name:ident = $expr_type:expr;)*],
     ) => {
-        #[allow(non_snake_case)]
-        pub mod $factory_name {
-            $($imports)*
-            use serde::{Deserialize, Serialize};
-            use std::marker::PhantomData;
-            use std::cell::Cell;
+        $($imports)*
 
-            #[allow(non_camel_case_types)]
-            pub struct $factory_name;
+        pub struct $factory_name;
 
-            impl $factory_name {
-                pub(crate) fn new<'a>() -> $crate::factory::Factory<'a, $struct>
-                {
-                    $crate::factory::Factory {
-                        model: serde_json::to_string(&$struct {$($expr_name: $expr_type(1),)*}).unwrap(),
-                        sequence: Cell::new(1),
-                        gen_func: Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*}),
-                        _maker: PhantomData,
-                    }
-                }
+        impl $factory_name {
+            pub(crate) fn new<'a>() -> $crate::factory::Factory<'a, $struct>
+            {
+                $crate::factory::new($struct {$($expr_name: $expr_type(1),)*}, Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*}))
+            }
 
-                pub(crate) fn build<'a>(n: u16) -> $struct
-                {
-                    $crate::factory::Factory {
-                        model: serde_json::to_string(&$struct {$($expr_name: $expr_type(1),)*}).unwrap(),
-                        sequence: Cell::new(1),
-                        gen_func: Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*}),
-                        _maker: PhantomData,
-                    }.build_n(n, |_| {})
-                }
+            pub(crate) fn build<'a>(n: u16) -> $struct
+            {
+                $crate::factory::new($struct {$($expr_name: $expr_type(1),)*}, Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*})).build_n(n, |_| {})
+            }
+
+            pub(crate) fn build_list<'a>(number: u16, n: u16) -> Vec<$struct>
+            {
+                $crate::factory::new($struct {$($expr_name: $expr_type(1),)*}, Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*})).build_list_n(number, n, |_| {})
             }
         }
     };

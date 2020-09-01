@@ -35,30 +35,11 @@ impl Default for Post {
     }
 }
 
-use factory::PostFactory::*;
+use factory::PostFactory;
 
 fn main() {
-    // let post_factory = beaver::new(Post::default(), |post, n| {
-    //     post.id = n;
-    //     post.title = format!("post-{}", n);
-    //     post.created_at = NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
-    // });
-
-    // overriding attributes of a factory
-    // let mut post1 = post_factory.build(|_| {});
-    // let post2 = post_factory.build(|_| {});
-    // let post3 = post_factory.build(|post| {
-    //     post.id = 1024;
-    //     post.title = "foo bar".to_string()
-    // });
-
-    // let hoge = factory::f();
-    // hoge(&mut post1);
-
-    // println!("{:?}\n{:?}\n{:?}", post1, post2, post3);
-
-    let p = PostFactory::new();
-    let post1 = p.build(|_| {});
-    let post2 = p.build(|_| {});
+    let post_factory = PostFactory::new();
+    let post1 = post_factory.build(|_| {});
+    let post2 = post_factory.build(|_| {});
     println!("{:?}\n{:?}", post1, post2);
 }
