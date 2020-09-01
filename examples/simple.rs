@@ -11,26 +11,26 @@ pub struct Post {
 }
 
 mod factory {
-    use super::Post;
-    use chrono::NaiveDate;
+    // use super::Post;
+    // use chrono::NaiveDate;
 
-    beaver::define! {
-        Post => (
-            Post {
-                id: 1,
-                title: "beaver".to_string(),
-                approved: true,
-                created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
-            }
-        ) {
-            id -> 2,
-            title -> "beaver".to_string(),
-            created_at -> NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
-        }
-    }
+    // beaver::define! {
+    //     Post => (
+    //         Post {
+    //             id: 1,
+    //             title: "beaver".to_string(),
+    //             approved: true,
+    //             created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+    //         }
+    //     ) {
+    //         id -> 2,
+    //         title -> "beaver".to_string(),
+    //         created_at -> NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+    //     }
+    // }
 
     beaver::def! {
-        use super::Post;
+        use crate::Post;
         use chrono::NaiveDate;
 
         post_facoty => (
@@ -41,9 +41,9 @@ mod factory {
                 created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
             }
         ) {
-            id -> 2,
-            title -> "beaver".to_string(),
-            created_at -> NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+            id -> {|n| {n}},
+            title -> {{|n| {format!("{}", n)}}},
+            created_at -> {|_| {NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)}},
         }
     }
 }
@@ -83,5 +83,6 @@ fn main() {
 
     let post_factory = post_facoty::new();
     let post1 = post_factory.build(|_| {});
-    println!("{:?}", post1);
+    let post2 = post_factory.build(|_| {});
+    println!("{:?}\n{:?}", post1, post2);
 }
