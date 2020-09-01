@@ -34,23 +34,33 @@ impl Default for Tag {
     }
 }
 
+mod factory {
+    beaver::define! {
+        use crate::Post;
+        use crate::factory::TagFactory::*;
+
+        PostFactory (Post) {
+            id -> |n| n,
+            title -> |n| format!("user-{}", n),
+            approved -> |_| false,
+            tags -> |n| vec![TagFactory::build(n)],
+        }
+    }
+
+    beaver::define! {
+        use crate::Tag;
+
+        TagFactory (Tag) {
+            id -> |n| n,
+            name -> |n| format!("tag-{}", n),
+        }
+    }
+}
+
+use crate::factory::PostFactory::*;
+
 fn main() {
-    let tag_factory = beaver::new(Tag::default(), |tag, n| {
-        tag.id = n;
-        tag.name = format!("tag-{}", beaver::sequence_a("x", n))
-    });
-
-    let post_factory = beaver::new(Post::default(), |post, n| {
-        post.id = n;
-        post.title = format!("post-{}", n);
-        // use build_list(number)
-        post.tags = tag_factory.build_list(3, |_| {})
-    });
-
-    let post1 = post_factory.build(|_| {});
-    let post2 = post_factory.build(|_| {});
-    println!("{:?}\n{:?}", post1, post2);
-
+    let post_factory = PostFactory::new();
     let posts = post_factory.build_list(3, |_| {});
     for post in posts {
         println!("{:?}", post);

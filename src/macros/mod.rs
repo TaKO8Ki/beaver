@@ -1,22 +1,5 @@
 #[macro_export]
 macro_rules! define {
-    ($struct:ident => ($default:expr) { $($fname:ident -> $ftype:expr),*,}) => {
-        pub struct model;
-        impl model {
-            pub fn f() -> impl Fn(&mut $struct) {
-                |m: &mut $struct| {$(m.$fname = $ftype);*}
-            }
-        }
-    };
-}
-
-#[macro_export]
-macro_rules! hoge {
-    ($struct:ident { $($fname:ident: $ftype:expr),*, }) => {};
-}
-
-#[macro_export]
-macro_rules! def {
     ($($tokens:tt)*) => {
         $crate::parse! {
             tokens = [$($tokens)*],
@@ -70,7 +53,7 @@ macro_rules! parse {
     };
 
     (
-        tokens = [{$($fname:ident -> ($ftype:expr)),*,}],
+        tokens = [{$($fname:ident -> $ftype:expr),*,}],
         imports = $imports:tt,
         name = $name:tt,
         struct_name = $struct_name:tt,
@@ -102,17 +85,18 @@ macro_rules! factory_impl {
         struct_name = $struct:ident,
         factory_expr = [$($expr_name:ident = $expr_type:expr;)*],
     ) => {
+        #[allow(non_snake_case)]
         pub mod $factory_name {
             $($imports)*
             use serde::{Deserialize, Serialize};
             use std::marker::PhantomData;
             use std::cell::Cell;
-            pub use model as $factory_name;
 
-            pub struct model;
+            #[allow(non_camel_case_types)]
+            pub struct $factory_name;
 
-            impl model {
-                pub fn new<'a>() -> $crate::factory::Factory<'a, $struct>
+            impl $factory_name {
+                pub(crate) fn new<'a>() -> $crate::factory::Factory<'a, $struct>
                 {
                     $crate::factory::Factory {
                         model: serde_json::to_string(&$struct {$($expr_name: $expr_type(1),)*}).unwrap(),
@@ -120,6 +104,16 @@ macro_rules! factory_impl {
                         gen_func: Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*}),
                         _maker: PhantomData,
                     }
+                }
+
+                pub(crate) fn build<'a>(n: u16) -> $struct
+                {
+                    $crate::factory::Factory {
+                        model: serde_json::to_string(&$struct {$($expr_name: $expr_type(1),)*}).unwrap(),
+                        sequence: Cell::new(1),
+                        gen_func: Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*}),
+                        _maker: PhantomData,
+                    }.build_n(n, |_| {})
                 }
             }
         }

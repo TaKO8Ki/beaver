@@ -11,33 +11,15 @@ pub struct Post {
 }
 
 mod factory {
-    // use super::Post;
-    // use chrono::NaiveDate;
-
-    // beaver::define! {
-    //     Post => (
-    //         Post {
-    //             id: 1,
-    //             title: "beaver".to_string(),
-    //             approved: true,
-    //             created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
-    //         }
-    //     ) {
-    //         id -> 2,
-    //         title -> "beaver".to_string(),
-    //         created_at -> NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
-    //     }
-    // }
-
-    beaver::def! {
+    beaver::define! {
         use crate::Post;
         use chrono::NaiveDate;
 
-        post_facoty (Post) {
-            id -> (|n| n),
-            title -> (|n| format!("{}", n)),
-            approved -> (|_| false),
-            created_at -> (|_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)),
+        PostFactory (Post) {
+            id -> |n| n,
+            title -> |n| format!("{}", n),
+            approved -> |_| false,
+            created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
         }
     }
 }
@@ -53,7 +35,7 @@ impl Default for Post {
     }
 }
 
-use factory::post_facoty::*;
+use factory::PostFactory::*;
 
 fn main() {
     // let post_factory = beaver::new(Post::default(), |post, n| {
@@ -75,8 +57,8 @@ fn main() {
 
     // println!("{:?}\n{:?}\n{:?}", post1, post2, post3);
 
-    let post_factory = post_facoty::new();
-    let post1 = post_factory.build(|_| {});
-    let post2 = post_factory.build(|_| {});
+    let p = PostFactory::new();
+    let post1 = p.build(|_| {});
+    let post2 = p.build(|_| {});
     println!("{:?}\n{:?}", post1, post2);
 }
