@@ -173,6 +173,7 @@ fn is_builds_struct() {
             created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
         }
     );
+    // post with id 3 doesn't exist
     assert_eq!(
         posts,
         vec![
