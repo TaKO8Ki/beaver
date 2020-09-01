@@ -23,37 +23,6 @@ pub struct Tag {
     name: String,
 }
 
-impl Default for File {
-    fn default() -> Self {
-        File {
-            id: 1,
-            path: "path/to/beaver.png".to_string(),
-        }
-    }
-}
-
-impl Default for Tag {
-    fn default() -> Self {
-        Tag {
-            id: 1,
-            name: "tag".to_string(),
-        }
-    }
-}
-
-impl Default for Post {
-    fn default() -> Self {
-        Post {
-            id: 1,
-            title: "post".to_string(),
-            approved: true,
-            file: File::default(),
-            tags: vec![],
-            created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
-        }
-    }
-}
-
 impl PartialEq for Post {
     fn eq(&self, other: &Self) -> bool {
         self.id == other.id
