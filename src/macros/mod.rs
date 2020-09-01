@@ -94,17 +94,26 @@ macro_rules! factory_impl {
         impl $factory_name {
             pub(crate) fn new<'a>() -> $crate::factory::Factory<'a, $struct>
             {
-                $crate::factory::new($struct {$($expr_name: $expr_type(1),)*}, Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*}))
+                $crate::factory::new(
+                    $struct {$($expr_name: $expr_type(1),)*},
+                    Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*})
+                )
             }
 
             pub(crate) fn build<'a>(n: u16) -> $struct
             {
-                $crate::factory::new($struct {$($expr_name: $expr_type(1),)*}, Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*})).build_n(n, |_| {})
+                $crate::factory::new(
+                    $struct {$($expr_name: $expr_type(1),)*},
+                    Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*})).build_n(n, |_| {}
+                )
             }
 
             pub(crate) fn build_list<'a>(number: u16, n: u16) -> Vec<$struct>
             {
-                $crate::factory::new($struct {$($expr_name: $expr_type(1),)*}, Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*})).build_list_n(number, n, |_| {})
+                $crate::factory::new(
+                    $struct {$($expr_name: $expr_type(1),)*},
+                    Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*})).build_list_n(number, n, |_| {}
+                )
             }
         }
     };
