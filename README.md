@@ -88,7 +88,7 @@ use crate::factory::PostFactory;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Post {
+pub struct Post {
     id: u16,
     title: String,
     approved: bool,
@@ -96,7 +96,7 @@ struct Post {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Tag {
+pub struct Tag {
     id: u16,
     name: String,
 }
