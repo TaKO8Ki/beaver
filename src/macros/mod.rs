@@ -72,7 +72,7 @@ macro_rules! parse {
     };
 
     (
-        tokens = [$fname:ident -> {$ftype:expr}, $($rest:tt)*],
+        tokens = [$fname:ident -> ($ftype:expr), $($rest:tt)*],
         imports = $imports:tt,
         name = $name:tt,
         struct_name = $struct_name:tt,

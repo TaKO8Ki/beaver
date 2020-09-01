@@ -41,9 +41,9 @@ mod factory {
                 created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
             }
         ) {
-            id -> {|n| {n}},
-            title -> {{|n| {format!("{}", n)}}},
-            created_at -> {|_| {NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)}},
+            id -> (|n| n),
+            title -> (|n| format!("{}", n)),
+            created_at -> (|_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)),
         }
     }
 }
