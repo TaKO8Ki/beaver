@@ -33,14 +33,7 @@ mod factory {
         use crate::Post;
         use chrono::NaiveDate;
 
-        post_facoty => (
-            Post {
-                id: 1,
-                title: "beaver".to_string(),
-                approved: true,
-                created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
-            }
-        ) {
+        post_facoty (Post) {
             id -> (|n| n),
             title -> (|n| format!("{}", n)),
             approved -> (|_| false),

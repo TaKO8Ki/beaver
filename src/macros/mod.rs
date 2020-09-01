@@ -41,7 +41,7 @@ macro_rules! parse {
     };
 
     (
-        tokens = [$name:ident => $($rest:tt)*],
+        tokens = [$name:ident $($rest:tt)*],
         imports = $imports:tt,
         name = $ignore:tt,
         $($args:tt)*
@@ -55,7 +55,7 @@ macro_rules! parse {
     };
 
     (
-        tokens = [($struct_name:ident { $($fname:ident: $ftype:expr),*, }) {$($rest:tt)*}],
+        tokens = [($struct_name:ident) $($rest:tt)*],
         imports = $imports:tt,
         name = $name:tt,
         $($args:tt)*
@@ -65,27 +65,24 @@ macro_rules! parse {
             imports = $imports,
             name = $name,
             struct_name = $struct_name,
-            default_expr = $struct_name {$($fname: $ftype),*,},
             factory_expr = [],
         }
     };
 
     (
-        tokens = [$fname:ident -> ($ftype:expr), $($rest:tt)*],
+        tokens = [{$($fname:ident -> ($ftype:expr)),*,}],
         imports = $imports:tt,
         name = $name:tt,
         struct_name = $struct_name:tt,
-        default_expr = $default:expr,
         factory_expr = [$($factory_expr:tt)*],
         $($args:tt)*
     ) => {
         $crate::parse! {
-            tokens = [$($rest)*],
+            tokens = [],
             imports = $imports,
             name = $name,
             struct_name = $struct_name,
-            default_expr = $default,
-            factory_expr = [$($factory_expr)* $fname = $ftype;],
+            factory_expr = [$($fname = ($ftype);)*],
         }
     };
 
@@ -103,7 +100,6 @@ macro_rules! factory_impl {
         imports = [$($imports:tt)*],
         name = $factory_name:ident,
         struct_name = $struct:ident,
-        default_expr = $default:expr,
         factory_expr = [$($expr_name:ident = $expr_type:expr;)*],
     ) => {
         pub mod $factory_name {
