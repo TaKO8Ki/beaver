@@ -1,103 +1,87 @@
-use beaver::*;
 use chrono::{NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Post {
+    id: u16,
+    title: String,
+    approved: bool,
+    file: File,
+    tags: Vec<Tag>,
+    created_at: NaiveDateTime,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct File {
+    id: u16,
+    path: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Tag {
+    id: u16,
+    name: String,
+}
+
+impl PartialEq for Post {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+            && self.title == other.title
+            && self.approved == other.approved
+            && self.file == other.file
+            && self.tags == other.tags
+            && self.created_at == other.created_at
+    }
+}
+
+impl PartialEq for Tag {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id && self.name == other.name
+    }
+}
+
+impl PartialEq for File {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id && self.path == other.path
+    }
+}
+
+mod factory {
+    use super::{File, Post, Tag};
+    use chrono::NaiveDate;
+    // factory definition
+    beaver::define! {
+        PostFactory (Post) {
+            id -> |n| n,
+            title -> |n| format!("post-{}", n),
+            approved -> |_| false,
+            file -> |n| FileFactory::build(n),
+            tags -> |n| TagFactory::build_list(3, n),
+            created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+        }
+    }
+
+    beaver::define! {
+        FileFactory (File) {
+            id -> |n| n,
+            path -> |n| format!("path/to/file-{}", n),
+        }
+    }
+
+    beaver::define! {
+        TagFactory (Tag) {
+            id -> |n| n,
+            name -> |n| format!("tag-{}", n),
+        }
+    }
+}
+
 #[test]
 fn is_builds_struct() {
-    #[derive(Serialize, Deserialize, Debug)]
-    struct Post {
-        id: u16,
-        title: String,
-        approved: bool,
-        file: File,
-        tags: Vec<Tag>,
-        created_at: NaiveDateTime,
-    }
+    use factory::{FileFactory, PostFactory};
 
-    #[derive(Serialize, Deserialize, Debug)]
-    struct File {
-        id: u16,
-        path: String,
-    }
-
-    #[derive(Serialize, Deserialize, Debug)]
-    struct Tag {
-        id: u16,
-        name: String,
-    }
-
-    impl Default for File {
-        fn default() -> Self {
-            File {
-                id: 1,
-                path: "path/to/beaver.png".to_string(),
-            }
-        }
-    }
-
-    impl Default for Tag {
-        fn default() -> Self {
-            Tag {
-                id: 1,
-                name: "tag".to_string(),
-            }
-        }
-    }
-
-    impl Default for Post {
-        fn default() -> Self {
-            Post {
-                id: 1,
-                title: "post".to_string(),
-                approved: true,
-                file: File::default(),
-                tags: vec![],
-                created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
-            }
-        }
-    }
-
-    impl PartialEq for Post {
-        fn eq(&self, other: &Self) -> bool {
-            self.id == other.id
-                && self.title == other.title
-                && self.approved == other.approved
-                && self.file == other.file
-                && self.tags == other.tags
-                && self.created_at == other.created_at
-        }
-    }
-
-    impl PartialEq for Tag {
-        fn eq(&self, other: &Self) -> bool {
-            self.id == other.id && self.name == other.name
-        }
-    }
-
-    impl PartialEq for File {
-        fn eq(&self, other: &Self) -> bool {
-            self.id == other.id && self.path == other.path
-        }
-    }
-
-    let tag_factory = new(Tag::default(), |tag, n| {
-        tag.id = n;
-        tag.name = format!("tag-{}", n)
-    });
-
-    let file_factory = new(File::default(), |file, n| {
-        file.id = n;
-        file.path = format!("path/to/file-{}", n)
-    });
-
-    let post_factory = new(Post::default(), |post, n| {
-        post.id = n;
-        post.title = format!("post-{}", n);
-        post.approved = false;
-        post.file = file_factory.build(|_| {});
-        post.tags = tag_factory.build_list(3, |_| {});
-        post.created_at = NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
-    });
+    let file_factory = FileFactory::new();
+    let post_factory = PostFactory::new();
 
     let post1 = post_factory.build(|_| {});
     let post2 = post_factory.build(|_| {});
@@ -169,8 +153,8 @@ fn is_builds_struct() {
             title: "foo".to_string(),
             approved: false,
             file: File {
-                id: 4,
-                path: "path/to/file-4".to_string()
+                id: 1,
+                path: "path/to/file-1".to_string()
             },
             tags: vec![
                 Tag {
@@ -189,6 +173,7 @@ fn is_builds_struct() {
             created_at: NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
         }
     );
+    // post with id 3 doesn't exist
     assert_eq!(
         posts,
         vec![
@@ -197,8 +182,8 @@ fn is_builds_struct() {
                 title: "post-4".to_string(),
                 approved: false,
                 file: File {
-                    id: 5,
-                    path: "path/to/file-5".to_string()
+                    id: 4,
+                    path: "path/to/file-4".to_string()
                 },
                 tags: vec![
                     Tag {
@@ -221,8 +206,8 @@ fn is_builds_struct() {
                 title: "post-5".to_string(),
                 approved: false,
                 file: File {
-                    id: 6,
-                    path: "path/to/file-6".to_string()
+                    id: 5,
+                    path: "path/to/file-5".to_string()
                 },
                 tags: vec![
                     Tag {

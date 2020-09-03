@@ -3,21 +3,19 @@ use serde::{Deserialize, Serialize};
 use std::cell::Cell;
 use std::marker::PhantomData;
 
-pub struct Factory<'a, F, T>
+pub struct Factory<'a, T>
 where
     T: Serialize + Deserialize<'a>,
-    F: Fn(&mut T, u16),
 {
     pub model: String,
     pub sequence: Cell<u16>,
-    pub gen_func: F,
-    _maker: PhantomData<&'a T>,
+    pub gen_func: Box<dyn Fn(&mut T, u16)>,
+    pub _maker: PhantomData<&'a T>,
 }
 
-pub fn new<'a, T, S>(model: T, suite: S) -> Factory<'a, S, T>
+pub fn new<'a, T>(model: T, suite: Box<dyn Fn(&mut T, u16)>) -> Factory<'a, T>
 where
     T: Serialize + Deserialize<'a>,
-    S: Fn(&mut T, u16),
 {
     Factory {
         model: serde_json::to_string(&model).unwrap(),
@@ -47,10 +45,9 @@ fn to_alphabet(n: u128) -> String {
     }
 }
 
-impl<'a, F, T> Factory<'a, F, T>
+impl<'a, T> Factory<'a, T>
 where
     T: Serialize + Deserialize<'a>,
-    F: Fn(&mut T, u16),
 {
     pub fn build<O>(&'a self, f: O) -> T
     where
@@ -64,6 +61,19 @@ where
         model
     }
 
+    #[doc(hidden)]
+    pub fn build_n<O>(&'a self, n: u16, f: O) -> T
+    where
+        O: Fn(&mut T),
+    {
+        let mut model = serde_json::from_str(self.model.as_str()).unwrap();
+        let suite = &self.gen_func;
+        suite(&mut model, n);
+        f(&mut model);
+        self.sequence.set(self.sequence.get() + 1);
+        model
+    }
+
     pub fn build_list<O>(&'a self, number: u16, f: O) -> Vec<T>
     where
         O: Fn(&mut T),
@@ -71,6 +81,18 @@ where
         let mut list = vec![];
         for _ in 0..number {
             list.push(self.build(&f))
+        }
+        list
+    }
+
+    #[doc(hidden)]
+    pub fn build_list_n<O>(&'a self, number: u16, n: u16, f: O) -> Vec<T>
+    where
+        O: Fn(&mut T),
+    {
+        let mut list = vec![];
+        for i in number * (n - 1) + 1..number * (n - 1) + number + 1 {
+            list.push(self.build_n(i, &f))
         }
         list
     }
@@ -149,24 +171,33 @@ mod tests {
             }
         }
 
-        let tag_factory = new(Tag::default(), |tag, n| {
-            tag.id = n;
-            tag.name = format!("tag-{}", n)
-        });
-
-        let file_factory = new(File::default(), |file, n| {
-            file.id = n;
-            file.path = format!("path/to/file-{}", n)
-        });
-
-        let post_factory = new(Post::default(), |post, n| {
-            post.id = n;
-            post.title = format!("post-{}", n);
-            post.approved = false;
-            post.file = file_factory.build(|_| {});
-            post.tags = tag_factory.build_list(3, |_| {});
-            post.created_at = NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
-        });
+        let post_factory = new(
+            Post::default(),
+            Box::new(|post, n| {
+                post.id = n;
+                post.title = format!("post-{}", n);
+                post.approved = false;
+                post.file = File {
+                    id: n,
+                    path: format!("path/to/file-{}", n),
+                };
+                post.tags = vec![
+                    Tag {
+                        id: n,
+                        name: format!("tag-{}", n),
+                    },
+                    Tag {
+                        id: n + 1,
+                        name: format!("tag-{}", n + 1),
+                    },
+                    Tag {
+                        id: n + 2,
+                        name: format!("tag-{}", n + 2),
+                    },
+                ];
+                post.created_at = NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0)
+            }),
+        );
 
         assert_eq!(
             post_factory.model,

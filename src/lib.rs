@@ -1,3 +1,5 @@
 pub mod factory;
-mod variable;
-pub use factory::{new, sequence, sequence_a, Factory};
+pub mod macros;
+pub mod variable;
+
+pub use factory::{sequence, sequence_a, Factory};

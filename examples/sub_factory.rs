@@ -1,51 +1,43 @@
+use factory::UserFactory;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-struct File {
+pub struct File {
     id: u16,
     path: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct User {
+pub struct User {
     id: u16,
     name: String,
     file: File,
 }
 
-impl Default for File {
-    fn default() -> Self {
-        File {
-            id: 1,
-            path: "path/to/beaver.png".to_string(),
+mod factory {
+    use crate::File;
+    use crate::User;
+
+    beaver::define! {
+        UserFactory (User) {
+            id -> |n| n,
+            name -> |n| format!("user-{}", n),
+            file -> |n| FileFactory::build(n),
         }
     }
-}
 
-impl Default for User {
-    fn default() -> Self {
-        User {
-            id: 1,
-            name: "beaver".to_string(),
-            file: File::default(),
+    beaver::define! {
+        FileFactory (File) {
+            id -> |n| n,
+            path -> |n| format!("path/to/file-{}", n),
         }
     }
 }
 
 fn main() {
-    let file_factory = beaver::new(File::default(), |file, n| {
-        file.id = n;
-        file.path = format!("path/to/file-{}", n)
-    });
-
-    let user_factory = beaver::new(User::default(), |user, n| {
-        user.id = beaver::sequence(1000, n);
-        user.name = format!("user-{}", beaver::sequence_a("x", n));
-        user.file = file_factory.build(|_| {})
-    });
-
+    let user_factory = UserFactory::new();
     let users = user_factory.build_list(10, |_| {});
     for user in users {
-        println!("{:?}", user)
+        println!("{:?}", user);
     }
 }
