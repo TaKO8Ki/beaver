@@ -25,9 +25,9 @@ mod factory {
     }
 }
 
-use factory::PostFactory;
-
 fn main() {
+    use factory::PostFactory;
+
     let post_factory = PostFactory::new();
     let post1 = post_factory.build(|_| {});
     let post2 = post_factory.build(|_| {});

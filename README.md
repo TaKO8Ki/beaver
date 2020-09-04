@@ -2,7 +2,7 @@
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/TaKO8Ki/beaver/CI/master)](https://github.com/TaKO8Ki/beaver/actions)
 
-beaver is a library for setting up Rust objects inspired by factory_bot.
+beaver is a library for setting up Rust objects inspired by [factory_bot](https://github.com/thoughtbot/factory_bot).
 
 ## Dependencies
 
@@ -58,9 +58,9 @@ mod factory {
     }
 }
 
-use factory::PostFactory;
-
 fn main() {
+    use factory::PostFactory;
+
     let post_factory = PostFactory::new();
     let post1 = post_factory.build(|_| {});
     let post2 = post_factory.build(|_| {});
@@ -84,7 +84,6 @@ Post { id: 1024, title: "foo bar", approved: true, created_at: 2020-01-01T00:00:
 ### [Sub factory vector](examples/sub_factory_vector.rs)
 
 ```rust
-use crate::factory::PostFactory;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -124,6 +123,8 @@ mod factory {
 }
 
 fn main() {
+    use factory::PostFactory;
+
     let post_factory = PostFactory::new();
     let post1 = post_factory.build(|_| {});
     let post2 = post_factory.build(|_| {});

@@ -1,4 +1,3 @@
-use factory::UserFactory;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -35,6 +34,8 @@ mod factory {
 }
 
 fn main() {
+    use factory::UserFactory;
+
     let user_factory = UserFactory::new();
     let users = user_factory.build_list(10, |_| {});
     for user in users {
