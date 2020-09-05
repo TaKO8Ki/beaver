@@ -1,5 +1,6 @@
 <div align="center">
- <img src="./resources/logo.png" width=450 height=auto>
+
+ ![logo](./resources/logo.png)
 
  beaver is a library for setting up Rust objects inspired by [factory_bot](https://github.com/thoughtbot/factory_bot).
 
