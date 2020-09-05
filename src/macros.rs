@@ -3,6 +3,17 @@
 /// Example usage
 /// -------------
 /// ```rust
+/// use chrono::{NaiveDate, NaiveDateTime};
+/// use serde::{Deserialize, Serialize};
+///
+/// #[derive(Serialize, Deserialize)]
+/// pub struct Post {
+///     id: u16,
+///     title: String,
+///     approved: bool,
+///     created_at: NaiveDateTime,
+/// }
+///
 /// beaver::define! {
 ///     PostFactory (Post) {
 ///         id -> |n| n,
