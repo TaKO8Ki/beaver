@@ -1,9 +1,12 @@
 <div align="center">
- <img src="./resources/logo.png" width=500 height=auto>
+ <img src="./resources/logo.png" width=450 height=auto>
 
  beaver is a library for setting up Rust objects inspired by [factory_bot](https://github.com/thoughtbot/factory_bot).
 
  [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/TaKO8Ki/beaver/CI/master)](https://github.com/TaKO8Ki/beaver/actions)
+
+ [Usage](#Usage) | [Examples](./examples) | [Docs](https://docs.rs/beaver)
+
 </div>
 
 ## Dependencies
