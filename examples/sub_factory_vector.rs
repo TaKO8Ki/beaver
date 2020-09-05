@@ -1,4 +1,3 @@
-use crate::factory::PostFactory;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -38,6 +37,8 @@ mod factory {
 }
 
 fn main() {
+    use factory::PostFactory;
+
     let post_factory = PostFactory::new();
     let post1 = post_factory.build(|_| {});
     let post2 = post_factory.build(|_| {});
