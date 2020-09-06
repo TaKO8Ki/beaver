@@ -99,7 +99,7 @@ macro_rules! define {
     ($($tokens:tt)*) => {
         $crate::beaver_parse! {
             tokens = [$($tokens)*],
-            name = unknown,
+            factory_name = unknown,
         }
     };
 }
@@ -108,42 +108,42 @@ macro_rules! define {
 #[doc(hidden)]
 macro_rules! beaver_parse {
     (
-        tokens = [$name:ident $($rest:tt)*],
-        name = $ignore:tt,
+        tokens = [$factory_name:ident $($rest:tt)*],
+        factory_name = $ignore:tt,
         $($args:tt)*
     ) => {
         $crate::beaver_parse! {
             tokens = [$($rest)*],
-            name = $name,
+            factory_name = $factory_name,
             $($args)*
         }
     };
 
     (
         tokens = [($struct_name:ident) $($rest:tt)*],
-        name = $name:tt,
+        factory_name = $factory_name:tt,
         $($args:tt)*
     ) => {
         $crate::beaver_parse! {
             tokens = [$($rest)*],
-            name = $name,
+            factory_name = $factory_name,
             struct_name = $struct_name,
-            factory_expr = [],
+            fields = [],
         }
     };
 
     (
-        tokens = [{$($fname:ident -> $ftype:expr),*,}],
-        name = $name:tt,
+        tokens = [{$($fname:ident -> $fvalue:expr),*,}],
+        factory_name = $factory_name:tt,
         struct_name = $struct_name:tt,
-        factory_expr = [$($factory_expr:tt)*],
+        fields = [$($ignore:tt)*],
         $($args:tt)*
     ) => {
         $crate::beaver_parse! {
             tokens = [],
-            name = $name,
+            factory_name = $factory_name,
             struct_name = $struct_name,
-            factory_expr = [$($fname = ($ftype);)*],
+            fields = [$($fname = ($fvalue);)*],
         }
     };
 
@@ -159,9 +159,9 @@ macro_rules! beaver_parse {
 #[doc(hidden)]
 macro_rules! beaver_factory_impl {
     (
-        name = $factory_name:ident,
+        factory_name = $factory_name:ident,
         struct_name = $struct:ident,
-        factory_expr = [$($expr_name:ident = $expr_type:expr;)*],
+        fields = [$($fname:ident = $fvalue:expr;)*],
     ) => {
         pub struct $factory_name;
 
@@ -169,24 +169,24 @@ macro_rules! beaver_factory_impl {
             pub fn new<'a>() -> $crate::factory::Factory<'a, $struct>
             {
                 $crate::factory::new(
-                    $struct {$($expr_name: $expr_type(1),)*},
-                    Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*})
+                    $struct {$($fname: $fvalue(1),)*},
+                    Box::new(|m: &mut $struct, n| {$(m.$fname = $fvalue(n));*})
                 )
             }
 
             pub fn build<'a>(n: u16) -> $struct
             {
                 $crate::factory::new(
-                    $struct {$($expr_name: $expr_type(1),)*},
-                    Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*})
+                    $struct {$($fname: $fvalue(1),)*},
+                    Box::new(|m: &mut $struct, n| {$(m.$fname = $fvalue(n));*})
                 ).build_n(n, |_| {})
             }
 
             pub fn build_list<'a>(number: u16, n: u16) -> Vec<$struct>
             {
                 $crate::factory::new(
-                    $struct {$($expr_name: $expr_type(1),)*},
-                    Box::new(|m: &mut $struct, n| {$(m.$expr_name = $expr_type(n));*})
+                    $struct {$($fname: $fvalue(1),)*},
+                    Box::new(|m: &mut $struct, n| {$(m.$fname = $fvalue(n));*})
                 ).build_list_n(number, n, |_| {})
             }
         }
