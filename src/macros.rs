@@ -1,4 +1,4 @@
-/// Defines [Factory](struct.Factory.html).
+/// ˙Defines [Factory](struct.Factory.html) and which struct it has.
 ///
 /// Example usage
 /// -------------
@@ -20,6 +20,77 @@
 ///         title -> |n| format!("{}", n),
 ///         approved -> |_| false,
 ///         created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+///     }
+/// }
+/// ```
+///
+/// if you want to use sub factory, you can use `[factory name].build(n)` like the following:
+///
+/// ```rust
+/// use serde::{Deserialize, Serialize};
+///
+/// #[derive(Serialize, Deserialize)]
+/// pub struct File {
+///     id: u16,
+///     path: String,
+/// }
+///
+/// #[derive(Serialize, Deserialize)]
+/// pub struct User {
+///     id: u16,
+///     name: String,
+///     file: File,
+/// }
+///
+/// beaver::define! {
+///     UserFactory (User) {
+///         id -> |n| n,
+///         name -> |n| format!("user-{}", n),
+///         file -> |n| FileFactory::build(n),
+///     }
+/// }
+///
+/// beaver::define! {
+///     FileFactory (File) {
+///         id -> |n| n,
+///         path -> |n| format!("path/to/file-{}", n),
+///     }
+/// }
+/// ```
+///
+/// if you want to use vector of sub factory, you can use `[factory name]::build_list(number, n)` like the following:
+///
+/// ```rust
+/// use chrono::{NaiveDate, NaiveDateTime};
+/// use serde::{Deserialize, Serialize};
+///
+/// #[derive(Serialize, Deserialize)]
+/// pub struct Post {
+///     id: u16,
+///     title: String,
+///     approved: bool,
+///     tags: Vec<Tag>,
+/// }
+///
+/// #[derive(Serialize, Deserialize)]
+/// pub struct Tag {
+///     id: u16,
+///     name: String,
+/// }
+///
+/// beaver::define! {
+///     PostFactory (Post) {
+///         id -> |n| n,
+///         title -> |n| format!("post-{}", n),
+///         approved -> |_| true,
+///         tags -> |n| TagFactory::build_list(3, n),
+///     }
+/// }
+///
+/// beaver::define! {
+///     TagFactory (Tag) {
+///         id -> |n| beaver::sequence(100, n),
+///         name -> |n| format!("tag-{}", n),
 ///     }
 /// }
 /// ```
