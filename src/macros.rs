@@ -1,4 +1,4 @@
-/// ˙Defines [Factory](struct.Factory.html) and which struct it has.
+/// Defines [Factory](struct.Factory.html) and which struct it has.
 ///
 /// Example usage
 /// -------------
@@ -166,9 +166,9 @@ macro_rules! beaver_factory_impl {
         pub struct $factory_name;
 
         impl $factory_name {
-            pub fn new<'a>() -> $crate::factory::Factory<'a, $struct>
+            pub fn new<'a>() -> $crate::Factory<'a, $struct>
             {
-                $crate::factory::new(
+                $crate::new(
                     $struct {$($fname: $fvalue(1),)*},
                     Box::new(|m: &mut $struct, n| {$(m.$fname = $fvalue(n));*})
                 )
@@ -176,7 +176,7 @@ macro_rules! beaver_factory_impl {
 
             pub fn build<'a>(n: u16) -> $struct
             {
-                $crate::factory::new(
+                $crate::new(
                     $struct {$($fname: $fvalue(1),)*},
                     Box::new(|m: &mut $struct, n| {$(m.$fname = $fvalue(n));*})
                 ).build_n(n, |_| {})
@@ -184,7 +184,7 @@ macro_rules! beaver_factory_impl {
 
             pub fn build_list<'a>(number: u16, n: u16) -> Vec<$struct>
             {
-                $crate::factory::new(
+                $crate::new(
                     $struct {$($fname: $fvalue(1),)*},
                     Box::new(|m: &mut $struct, n| {$(m.$fname = $fvalue(n));*})
                 ).build_list_n(number, n, |_| {})

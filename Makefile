@@ -3,4 +3,4 @@ test:
 
 doc:
 	cargo clean --doc
-	cargo doc --no-deps --open
+	cargo doc --no-deps

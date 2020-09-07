@@ -13,7 +13,7 @@ where
     pub _maker: PhantomData<&'a T>,
 }
 
-/// Create [Factory](struct.Factory.html) for the `model`.
+/// Creates [Factory](struct.Factory.html) for the `model`.
 pub fn new<'a, T>(model: T, suite: Box<dyn Fn(&mut T, u16)>) -> Factory<'a, T>
 where
     T: Serialize + Deserialize<'a>,
@@ -27,6 +27,30 @@ where
 }
 
 /// Returns a consecutive term. The first term is `from` argument.
+///
+/// # Usage
+/// ```rust
+/// use chrono::{NaiveDate, NaiveDateTime};
+/// use serde::{Deserialize, Serialize};
+///
+/// #[derive(Serialize, Deserialize)]
+/// pub struct Post {
+///     id: u16,
+///     title: String,
+///     approved: bool,
+///     created_at: NaiveDateTime,
+/// }
+///
+/// beaver::define! {
+///     PostFactory (Post) {
+///         id -> |n| n,
+///         // First post's title is "post-100". Second post's title is "post-101".
+///         title -> |n| format!("post-{}", beaver::sequence(100, n)),
+///         approved -> |_| false,
+///         created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+///     }
+/// }
+/// ```
 pub fn sequence(from: u16, n: u16) -> u16 {
     from + n - 1
 }
@@ -37,6 +61,30 @@ pub fn sequence(from: u16, n: u16) -> u16 {
 /// - When `from` is "z" and `n` is 1, this function returns "z".
 /// - When `from` is "z" and `n` is 2, this function returns "aa".
 /// - When `from` is "z" and `n` is 20, this function returns "ba".
+///
+/// # Usage
+/// ```rust
+/// use chrono::{NaiveDate, NaiveDateTime};
+/// use serde::{Deserialize, Serialize};
+///
+/// #[derive(Serialize, Deserialize)]
+/// pub struct Post {
+///     id: u16,
+///     title: String,
+///     approved: bool,
+///     created_at: NaiveDateTime,
+/// }
+///
+/// beaver::define! {
+///     PostFactory (Post) {
+///         id -> |n| n,
+///         // First post's title is "post-a". Second post's title is "post-b".
+///         title -> |n| format!("post-{}", beaver::sequence_a("a", n)),
+///         approved -> |_| false,
+///         created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+///     }
+/// }
+/// ```
 pub fn sequence_a(from: &str, n: u16) -> String {
     to_alphabet(*variable::ALPHABET_INDEX.get(from).unwrap() as u128 + (n - 1) as u128)
 }
