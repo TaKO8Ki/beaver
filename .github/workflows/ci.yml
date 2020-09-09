@@ -61,8 +61,10 @@ jobs:
 
   test:
     name: Test
-    matrix:
-        os: [ubuntu-20.04, macos-latest, windows-latest]
+    strategy:
+      fail-fast: false
+      matrix:
+          os: [ubuntu-20.04, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     needs: check
     steps:
