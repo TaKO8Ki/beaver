@@ -1,4 +1,4 @@
-/// Defines [Factory](struct.Factory.html) and which struct it has.
+/// Defines a [Factory](struct.Factory.html) and which struct it has.
 ///
 /// Example usage
 /// -------------
@@ -58,7 +58,7 @@
 /// }
 /// ```
 ///
-/// if you want to use vector of sub factory, you can use `[factory name]::build_list(number, n)` like the following:
+/// if you want to use a vector of sub factories, you can use `[factory name]::build_list(number, n)` like the following:
 ///
 /// ```rust
 /// use chrono::{NaiveDate, NaiveDateTime};

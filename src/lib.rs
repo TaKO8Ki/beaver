@@ -4,6 +4,21 @@
 //!
 //! This crate is a library for setting up Rust objects inspired by [factory_bot](https://github.com/thoughtbot/factory_bot).
 //!
+//! ## Dependencies
+//! ```toml
+//! [dependencies]
+//! beaver = "0.1.0"
+//! serde = { version = "1.0", features = ["derive"] }
+//! ```
+//! If you want to use [chrono](https://!docs.rs/chrono/) for your struct fields, `Cargo.toml` would look like this.
+//! ```toml
+//! [dependencies]
+//! beaver = "0.1.0"
+//! serde = { version = "1.0", features = ["derive"] }
+//! # you need `serde` feature.
+//! chrono = { version = "0.4", features = ["serde"] }
+//! ```
+//!
 //! ## Examples
 //! You can define your factory like the following.
 //! ```rust

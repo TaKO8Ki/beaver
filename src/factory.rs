@@ -13,7 +13,7 @@ where
     pub _maker: PhantomData<&'a T>,
 }
 
-/// Creates [Factory](struct.Factory.html) for the `model`.
+#[doc(hidden)]
 pub fn new<'a, T>(model: T, suite: Box<dyn Fn(&mut T, u16)>) -> Factory<'a, T>
 where
     T: Serialize + Deserialize<'a>,
@@ -26,7 +26,7 @@ where
     }
 }
 
-/// Returns a consecutive term. The first term is `from` argument.
+/// Returns a consecutive term. The first term is `from`.
 ///
 /// # Usage
 /// ```rust
@@ -55,7 +55,7 @@ pub fn sequence(from: u16, n: u16) -> u16 {
     from + n - 1
 }
 
-/// Returns a consecutive letter. The first letter is `from` argument.
+/// Returns a consecutive letter. The first letter is `from`.
 ///
 /// # Example
 /// - When `from` is "z" and `n` is 1, this function returns "z".
@@ -137,7 +137,7 @@ where
         model
     }
 
-    /// Builds a vector of struct from [Factory](struct.Factory.html).
+    /// Builds a vector of structs from [Factory](struct.Factory.html).
     pub fn build_list<O>(&'a self, number: u16, f: O) -> Vec<T>
     where
         O: Fn(&mut T),
