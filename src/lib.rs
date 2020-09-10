@@ -46,7 +46,7 @@
 //! - [sequence_a](factory/fn.sequence_a.html): If you want to use a sequence letter, you can use this function.
 //!
 //! You can use your factory like the following.
-//! ```rust
+//! ```
 //! use serde::{Deserialize, Serialize};
 //!
 //! #[derive(Serialize, Deserialize, Debug)]
@@ -64,18 +64,31 @@
 //!     }
 //! }
 //!
-//! fn main() {
-//!     use PostFactory;
+//! impl Post {
+//!     pub fn something(self) -> String {
+//!         self.title
+//!     }
+//! }
 //!
-//!     let post_factory = PostFactory::new();
-//!     let post1 = post_factory.build(|_| {});
-//!     let post2 = post_factory.build(|_| {});
-//!     // overriding attributes of a factory
-//!     let post3 = post_factory.build(|post| {
-//!         post.id = 1024;
-//!         post.title = "foo bar".to_string()
-//!     });
-//!     println!("{:?}\n{:?}\n{:?}", post1, post2, post3);
+//! #[cfg(test)]
+//! mod tests {
+//!     #[test]
+//!     fn test_something() {
+//!         use crate::factory::PostFactory;
+//!
+//!         let post_factory = PostFactory::new();
+//!         let post1 = post_factory.build(|_| {});
+//!         let post2 = post_factory.build(|_| {});
+//!         // overriding attributes of a factory
+//!         let post3 = post_factory.build(|post| {
+//!             post.id = 1024;
+//!             post.title = "foo bar".to_string()
+//!         });
+//!
+//!         assert_eq!(post1.something(), "post-1");
+//!         assert_eq!(post2.something(), "post-2");
+//!         assert_eq!(post3.something(), "foo bar");
+//!     }
 //! }
 //! ```
 
