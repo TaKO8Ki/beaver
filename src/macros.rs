@@ -24,7 +24,7 @@
 /// }
 /// ```
 ///
-/// if you want to use sub factory, you can use `[factory name].build(n)` like the following:
+/// If you want to use sub factory, you can use `[factory name].build(n)` like the following:
 ///
 /// ```rust
 /// use serde::{Deserialize, Serialize};
@@ -58,7 +58,7 @@
 /// }
 /// ```
 ///
-/// if you want to use a vector of sub factories, you can use `[factory name]::build_list(number, n)` like the following:
+/// If you want to use a vector of sub factories, you can use `[factory name]::build_list(number, n)` like the following:
 ///
 /// ```rust
 /// use chrono::{NaiveDate, NaiveDateTime};
