@@ -61,7 +61,11 @@ jobs:
 
   test:
     name: Test
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+          os: [ubuntu-20.04, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     needs: check
     steps:
       - uses: actions/checkout@v2

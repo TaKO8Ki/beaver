@@ -13,6 +13,7 @@ where
     pub _maker: PhantomData<&'a T>,
 }
 
+#[doc(hidden)]
 pub fn new<'a, T>(model: T, suite: Box<dyn Fn(&mut T, u16)>) -> Factory<'a, T>
 where
     T: Serialize + Deserialize<'a>,
@@ -25,14 +26,75 @@ where
     }
 }
 
+/// Returns a consecutive term. The first term is `from`.
+///
+/// # Usage
+/// ```rust
+/// use chrono::{NaiveDate, NaiveDateTime};
+/// use serde::{Deserialize, Serialize};
+///
+/// #[derive(Serialize, Deserialize)]
+/// pub struct Post {
+///     id: u16,
+///     title: String,
+///     approved: bool,
+///     created_at: NaiveDateTime,
+/// }
+///
+/// beaver::define! {
+///     PostFactory (Post) {
+///         id -> |n| n,
+///         // First post's title is "post-100". Second post's title is "post-101".
+///         title -> |n| format!("post-{}", beaver::sequence(100, n)),
+///         approved -> |_| false,
+///         created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+///     }
+/// }
+/// ```
 pub fn sequence(from: u16, n: u16) -> u16 {
     from + n - 1
 }
 
+/// Returns a consecutive letter. The first letter is `from`.
+///
+/// # Example
+/// - When `from` is "z" and `n` is 1, this function returns "z".
+/// - When `from` is "z" and `n` is 2, this function returns "aa".
+/// - When `from` is "z" and `n` is 20, this function returns "ba".
+///
+/// # Usage
+/// ```rust
+/// use chrono::{NaiveDate, NaiveDateTime};
+/// use serde::{Deserialize, Serialize};
+///
+/// #[derive(Serialize, Deserialize)]
+/// pub struct Post {
+///     id: u16,
+///     title: String,
+///     approved: bool,
+///     created_at: NaiveDateTime,
+/// }
+///
+/// beaver::define! {
+///     PostFactory (Post) {
+///         id -> |n| n,
+///         // First post's title is "post-a". Second post's title is "post-b".
+///         title -> |n| format!("post-{}", beaver::sequence_a("a", n)),
+///         approved -> |_| false,
+///         created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+///     }
+/// }
+/// ```
 pub fn sequence_a(from: &str, n: u16) -> String {
     to_alphabet(*variable::ALPHABET_INDEX.get(from).unwrap() as u128 + (n - 1) as u128)
 }
 
+/// Converts a number to Excel like base 26.
+///
+/// # Example
+/// - When n is 0, this function returns "a".
+/// - When n is 25, this function returns "z".
+/// - When n is 26, this function returns "aa".
 fn to_alphabet(n: u128) -> String {
     if n > 25 {
         format!(
@@ -49,6 +111,7 @@ impl<'a, T> Factory<'a, T>
 where
     T: Serialize + Deserialize<'a>,
 {
+    /// Builds a struct from [Factory](struct.Factory.html).
     pub fn build<O>(&'a self, f: O) -> T
     where
         O: Fn(&mut T),
@@ -74,6 +137,7 @@ where
         model
     }
 
+    /// Builds a vector of structs from [Factory](struct.Factory.html).
     pub fn build_list<O>(&'a self, number: u16, f: O) -> Vec<T>
     where
         O: Fn(&mut T),
@@ -100,7 +164,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::factory::{new, sequence, sequence_a};
+    use crate::factory::{new, sequence, sequence_a, to_alphabet};
     use chrono::{NaiveDate, NaiveDateTime};
     use serde::{Deserialize, Serialize};
 
@@ -268,5 +332,15 @@ mod tests {
         assert_eq!(sequence_a("z", 678), "aaa");
         assert_eq!(sequence_a("z", 975), "all");
         assert_eq!(sequence_a("z", 9975), "ntp");
+    }
+
+    #[test]
+    fn test_to_alphabet() {
+        assert_eq!(to_alphabet(0), "a");
+        assert_eq!(to_alphabet(25), "z");
+        assert_eq!(to_alphabet(26), "aa");
+        assert_eq!(to_alphabet(52), "ba");
+        assert_eq!(to_alphabet(701), "zz");
+        assert_eq!(to_alphabet(702), "aaa")
     }
 }
