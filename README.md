@@ -30,6 +30,72 @@ chrono = { version = "0.4", features = ["serde"] }
 
 ## Usage
 
+### Quickstart
+
+```rust
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Post {
+    id: u16,
+    title: String,
+    approved: bool,
+}
+
+beaver::define! {
+    PostFactory (Post) {
+        id -> |n| n,
+        title -> |n| format!("post-{}", n),
+        approved -> |_| false,
+    }
+}
+
+fn main() {
+    let post_factory = PostFactory::new();
+    let post1 = post_factory.build(|_| {});
+    let post2 = post_factory.build(|_| {});
+    println!("{:?}", post1);
+    println!("{:?}", post2);
+}
+```
+
+### Define Factories
+
+```rust
+beaver::define! {
+    // [factory name] (struct)
+    PostFactory (Post) {
+        id -> |n| n,
+        title -> |n| format!("{}", n),
+        approved -> |_| false,
+    }
+}
+```
+
+This `define!` macro defines `PostFactory` as a factory.
+
+### Build Factories
+
+
+```rust
+// initialize a factory.
+let post_factory = PostFactory::new();
+
+// build a `Post`.
+post_factory.build(|_| {});
+
+// build a vector of some `Posts`.
+post_factory.build_list(3, |_| {});
+
+// override attributes of a factory.
+post_factory.build(|post| {
+    post.id = 1024;
+    post.title = "foo bar".to_string()
+});
+```
+
+## Example
+
 - [Simple Factory](#simple-factory)
 - [Public factory](#public-factory)
 - [Sub factory vector](#sub-factory-vector)
@@ -50,7 +116,6 @@ struct Post {
     created_at: NaiveDateTime,
 }
 
-// factory definition
 beaver::define! {
     PostFactory (Post) {
         id -> |n| n,
@@ -64,7 +129,6 @@ fn main() {
     let post_factory = PostFactory::new();
     let post1 = post_factory.build(|_| {});
     let post2 = post_factory.build(|_| {});
-    // overriding attributes of a factory
     let post3 = post_factory.build(|post| {
         post.id = 1024;
         post.title = "foo bar".to_string()
