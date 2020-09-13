@@ -25,6 +25,7 @@
 //! use serde::{Deserialize, Serialize};
 //!
 //! // Your struct needs both of Serialize and Deserialize
+//! // and needs to be public.
 //! #[derive(Serialize, Deserialize)]
 //! pub struct Post {
 //!     id: u16,
@@ -51,7 +52,7 @@
 //! use serde::{Deserialize, Serialize};
 //!
 //! #[derive(Serialize, Deserialize, Debug)]
-//! pub struct Post {
+//! struct Post {
 //!     id: u16,
 //!     title: String,
 //!     approved: bool,
@@ -92,6 +93,9 @@
 //!     }
 //! }
 //! ```
+//!
+//! If you want to use factories out of modules, you need to define factories as public.
+//! For more information, please see [this example](https://github.com/TaKO8Ki/beaver/blob/master/examples/sub_factory.rs).
 
 mod factory;
 mod macros;
