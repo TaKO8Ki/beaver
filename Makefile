@@ -1,6 +1,6 @@
 .PHONY: test
 test:
-	cargo test --no-fail-fast -- --nocapture
+	@cargo test --no-fail-fast -- --nocapture
 
 .PHONY: dbuild
 dbuild:
