@@ -51,7 +51,7 @@ mod factory {
     use chrono::NaiveDate;
     // factory definition
     beaver::define! {
-        PostFactory (Post) {
+        pub PostFactory (Post) {
             id -> |n| n,
             title -> |n| format!("post-{}", n),
             approved -> |_| false,
@@ -62,7 +62,7 @@ mod factory {
     }
 
     beaver::define! {
-        FileFactory (File) {
+        pub FileFactory (File) {
             id -> |n| n,
             path -> |n| format!("path/to/file-{}", n),
         }
