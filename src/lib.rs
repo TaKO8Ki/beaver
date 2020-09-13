@@ -95,7 +95,7 @@
 //! ```
 //!
 //! If you want to use factories out of modules, you need to define factories as public.
-//! For more information, please see [this example](https://github.com/TaKO8Ki/beaver/blob/master/examples/sub_factory.rs).
+//! For more information, please see [this example](https://github.com/TaKO8Ki/beaver/blob/master/examples/public_factory.rs).
 
 mod factory;
 mod macros;
