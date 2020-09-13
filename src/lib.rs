@@ -24,6 +24,7 @@
 //! ```rust
 //! use serde::{Deserialize, Serialize};
 //!
+//! // Your struct needs both of Serialize and Deserialize
 //! #[derive(Serialize, Deserialize)]
 //! pub struct Post {
 //!     id: u16,

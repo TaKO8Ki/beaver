@@ -26,7 +26,7 @@ where
     }
 }
 
-/// Returns a consecutive term. The first term is `from`.
+/// Returns a consecutive term. `from` is the first term.
 ///
 /// # Usage
 /// ```rust
@@ -55,12 +55,12 @@ pub fn sequence(from: u16, n: u16) -> u16 {
     from + n - 1
 }
 
-/// Returns a consecutive letter. The first letter is `from`.
+/// Returns a consecutive letter. `from` is the first letter.
 ///
 /// # Example
-/// - When `from` is "z" and `n` is 1, this function returns "z".
-/// - When `from` is "z" and `n` is 2, this function returns "aa".
-/// - When `from` is "z" and `n` is 20, this function returns "ba".
+/// - If `from` is "z" and `n` is 1, this function returns "z".
+/// - If `from` is "z" and `n` is 2, this function returns "aa".
+/// - If `from` is "z" and `n` is 20, this function returns "ba".
 ///
 /// # Usage
 /// ```rust
@@ -78,7 +78,8 @@ pub fn sequence(from: u16, n: u16) -> u16 {
 /// beaver::define! {
 ///     PostFactory (Post) {
 ///         id -> |n| n,
-///         // First post's title is "post-a". Second post's title is "post-b".
+///         // First post's title: "post-a"
+///         // Second post's title: "post-b"
 ///         title -> |n| format!("post-{}", beaver::sequence_a("a", n)),
 ///         approved -> |_| false,
 ///         created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
