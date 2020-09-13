@@ -10,6 +10,7 @@ struct Post {
     created_at: NaiveDateTime,
 }
 
+// factory definition
 beaver::define! {
     PostFactory (Post) {
         id -> |n| n,

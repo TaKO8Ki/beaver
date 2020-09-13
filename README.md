@@ -31,42 +31,36 @@ chrono = { version = "0.4", features = ["serde"] }
 ## Usage
 
 - [Simple Factory](#simple-factory)
+- [Public factory](#public-factory)
 - [Sub factory vector](#sub-factory-vector)
 - [Others](#others)
 
 ### [Simple factory](examples/simple.rs)
 
 ```rust
-use chrono::NaiveDateTime;
+use chrono::{NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 
 // Post needs both of Serialize and Deserialize
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Post {
+struct Post {
     id: u16,
     title: String,
     approved: bool,
     created_at: NaiveDateTime,
 }
 
-mod factory {
-    use crate::Post;
-    use chrono::NaiveDate;
-
-    // factory definition
-    beaver::define! {
-        PostFactory (Post) {
-            id -> |n| n,
-            title -> |n| format!("{}", n),
-            approved -> |_| false,
-            created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
-        }
+// factory definition
+beaver::define! {
+    PostFactory (Post) {
+        id -> |n| n,
+        title -> |n| format!("{}", n),
+        approved -> |_| false,
+        created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
     }
 }
 
 fn main() {
-    use factory::PostFactory;
-
     let post_factory = PostFactory::new();
     let post1 = post_factory.build(|_| {});
     let post2 = post_factory.build(|_| {});
@@ -85,6 +79,54 @@ Output:
 Post { id: 1, title: "post-1", approved: true, created_at: 2020-01-01T00:00:00 }
 Post { id: 2, title: "post-2", approved: true, created_at: 2020-01-01T00:00:00 }
 Post { id: 1024, title: "foo bar", approved: true, created_at: 2020-01-01T00:00:00 }
+```
+
+### [Public factory](examples/public_factory.rs)
+
+```rust
+use chrono::NaiveDateTime;
+use serde::{Deserialize, Serialize};
+
+// Post needs both of Serialize and Deserialize
+// and needs to be public.
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Post {
+    id: u16,
+    title: String,
+    approved: bool,
+    created_at: NaiveDateTime,
+}
+
+mod factory {
+    use crate::Post;
+    use chrono::NaiveDate;
+
+    beaver::define! {
+        // PostFactory needs to be public.
+        pub PostFactory (Post) {
+            id -> |n| n,
+            title -> |n| format!("{}", n),
+            approved -> |_| false,
+            created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+        }
+    }
+}
+
+fn main() {
+    use factory::PostFactory;
+
+    let post_factory = PostFactory::new();
+    let post1 = post_factory.build(|_| {});
+    let post2 = post_factory.build(|_| {});
+    println!("{:?}\n{:?}", post1, post2);
+}
+```
+
+Output:
+
+```sh
+Post { id: 1, title: "1", approved: false, created_at: 2020-01-01T00:00:00 }
+Post { id: 2, title: "2", approved: false, created_at: 2020-01-01T00:00:00 }
 ```
 
 ### [Sub factory vector](examples/sub_factory_vector.rs)
@@ -111,7 +153,7 @@ mod factory {
     use crate::Tag;
 
     beaver::define! {
-        PostFactory (Post) {
+        pub PostFactory (Post) {
             id -> |n| n,
             title -> |n| format!("post-{}", n),
             approved -> |_| true,
