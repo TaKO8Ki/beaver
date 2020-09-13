@@ -75,7 +75,7 @@ pub fn sequence(from: u16, n: u16) -> u16 {
 ///     created_at: NaiveDateTime,
 /// }
 ///
-/// beaver::define! {
+/// beaver::define! {       
 ///     PostFactory (Post) {
 ///         id -> |n| n,
 ///         // First post's title: "post-a"
@@ -87,7 +87,13 @@ pub fn sequence(from: u16, n: u16) -> u16 {
 /// }
 /// ```
 pub fn sequence_a(from: &str, n: u16) -> String {
-    to_alphabet(*variable::ALPHABET_INDEX.get(from).unwrap() as u128 + (n - 1) as u128)
+    to_alphabet(
+        *variable::ALPHABET_INDEX
+            .get(from)
+            .unwrap_or_else(|| panic!("Unexpected value `{}`. Please use an alphabet.", from))
+            as u128
+            + (n - 1) as u128,
+    )
 }
 
 /// Converts a number to Excel like base 26.
@@ -333,6 +339,16 @@ mod tests {
         assert_eq!(sequence_a("z", 678), "aaa");
         assert_eq!(sequence_a("z", 975), "all");
         assert_eq!(sequence_a("z", 9975), "ntp");
+    }
+
+    #[test]
+    fn test_sequence_a_with_invalid_arguments() {
+        let result1 = std::panic::catch_unwind(|| sequence_a("panic", 1));
+        let result2 = std::panic::catch_unwind(|| sequence_a("zz", 1));
+        let result3 = std::panic::catch_unwind(|| sequence_a("aa", 1));
+        assert!(result1.is_err());
+        assert!(result2.is_err());
+        assert!(result3.is_err());
     }
 
     #[test]
