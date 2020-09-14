@@ -59,7 +59,7 @@ fn main() {
 }
 ```
 
-### Define Factories
+### Define a factory
 
 ```rust
 beaver::define! {
@@ -72,10 +72,9 @@ beaver::define! {
 }
 ```
 
-This `define!` macro defines `PostFactory` as a factory.
+This `define!` macro defines a struct, `PostFactory` as a factory.
 
-### Build Factories
-
+### Build structs
 
 ```rust
 // initialize a factory.
@@ -96,54 +95,9 @@ post_factory.build(|post| {
 
 ## Example
 
-- [Simple Factory](#simple-factory)
 - [Public factory](#public-factory)
 - [Sub factory vector](#sub-factory-vector)
-- [Others](#others)
-
-### [Simple factory](examples/simple.rs)
-
-```rust
-use chrono::{NaiveDate, NaiveDateTime};
-use serde::{Deserialize, Serialize};
-
-// Post needs both of Serialize and Deserialize
-#[derive(Serialize, Deserialize, Debug)]
-struct Post {
-    id: u16,
-    title: String,
-    approved: bool,
-    created_at: NaiveDateTime,
-}
-
-beaver::define! {
-    PostFactory (Post) {
-        id -> |n| n,
-        title -> |n| format!("{}", n),
-        approved -> |_| false,
-        created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
-    }
-}
-
-fn main() {
-    let post_factory = PostFactory::new();
-    let post1 = post_factory.build(|_| {});
-    let post2 = post_factory.build(|_| {});
-    let post3 = post_factory.build(|post| {
-        post.id = 1024;
-        post.title = "foo bar".to_string()
-    });
-    println!("{:?}\n{:?}\n{:?}", post1, post2, post3);
-}
-```
-
-Output:
-
-```sh
-Post { id: 1, title: "post-1", approved: true, created_at: 2020-01-01T00:00:00 }
-Post { id: 2, title: "post-2", approved: true, created_at: 2020-01-01T00:00:00 }
-Post { id: 1024, title: "foo bar", approved: true, created_at: 2020-01-01T00:00:00 }
-```
+- [Others](#othrers)
 
 ### [Public factory](examples/public_factory.rs)
 
@@ -258,9 +212,9 @@ Post { id: 3, title: "post-3", approved: true, tags: [Tag { id: 7, name: "tag-7"
 Post { id: 4, title: "post-4", approved: true, tags: [Tag { id: 10, name: "tag-10" }, Tag { id: 11, name: "tag-11" }, Tag { id: 12, name: "tag-12" }] }
 Post { id: 5, title: "post-5", approved: true, tags: [Tag { id: 13, name: "tag-13" }, Tag { id: 14, name: "tag-14" }, Tag { id: 15, name: "tag-15" }] }
 ```
-
 ### Others
 
+- [simple factory](examples/simple_factory.rs)
 - [sub factory](examples/sub_factory.rs)
 
 ## License
