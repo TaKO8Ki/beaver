@@ -65,6 +65,7 @@ fn main() {
 beaver::define! {
     // [factory name] (struct)
     PostFactory (Post) {
+        // `n` is a sequence number.
         id -> |n| n,
         title -> |n| format!("{}", n),
         approved -> |_| false,
@@ -93,7 +94,7 @@ post_factory.build(|post| {
 });
 ```
 
-## Example
+## Examples
 
 - [Public factory](#public-factory)
 - [Sub factory vector](#sub-factory-vector)
@@ -105,7 +106,7 @@ post_factory.build(|post| {
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
-// Post needs both of Serialize and Deserialize
+// `Post` needs both of `Serialize` and `Deserialize`
 // and needs to be public.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Post {
@@ -120,7 +121,7 @@ mod factory {
     use chrono::NaiveDate;
 
     beaver::define! {
-        // PostFactory needs to be public.
+        // `PostFactory` needs to be public.
         pub PostFactory (Post) {
             id -> |n| n,
             title -> |n| format!("{}", n),
