@@ -4,9 +4,9 @@
 
  beaver is a library for setting up Rust objects inspired by [factory_bot](https://github.com/thoughtbot/factory_bot).
 
- [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/TaKO8Ki/beaver/CI/master)](https://github.com/TaKO8Ki/beaver/actions)
+ [![github workflow status](https://img.shields.io/github/workflow/status/TaKO8Ki/beaver/CI/master)](https://github.com/TaKO8Ki/beaver/actions) [![crates](https://img.shields.io/crates/v/beaver.svg?logo=rust)](https://crates.io/crates/beaver) [![docs](https://img.shields.io/badge/docs-beaver-8da0cb?labelColor=555555&logo=rust)](https://docs.rs/beaver)
 
- [Usage](#Usage) | [Examples](./examples) | [Docs](https://docs.rs/beaver)
+ [Usage](#Usage) | [Examples](examples) | [Docs](https://docs.rs/beaver)
 
 </div>
 
