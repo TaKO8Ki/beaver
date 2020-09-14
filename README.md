@@ -35,6 +35,7 @@ chrono = { version = "0.4", features = ["serde"] }
 ```rust
 use serde::{Deserialize, Serialize};
 
+// `Post` needs both of `Serialize` and `Deserialize`.
 #[derive(Serialize, Deserialize, Debug)]
 struct Post {
     id: u16,
@@ -106,8 +107,7 @@ post_factory.build(|post| {
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
-// `Post` needs both of `Serialize` and `Deserialize`
-// and needs to be public.
+// `Post` needs to be public.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Post {
     id: u16,
