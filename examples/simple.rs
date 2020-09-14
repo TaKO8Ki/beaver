@@ -1,7 +1,7 @@
 use chrono::{NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 
-// `Post` needs both of Serialize and Deserialize.
+// `Post` needs both of `Serialize` and `Deserialize`.
 #[derive(Serialize, Deserialize, Debug)]
 struct Post {
     id: u16,
