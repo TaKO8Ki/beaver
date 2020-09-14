@@ -20,14 +20,13 @@
 //! ```
 //!
 //! ## Examples
-//! You can define your factory like the following.
+//! ### Define a factory
 //! ```rust
 //! use serde::{Deserialize, Serialize};
 //!
-//! // Your struct needs both of Serialize and Deserialize
-//! // and needs to be public.
+//! // Your struct needs both of `Serialize` and `Deserialize`.
 //! #[derive(Serialize, Deserialize)]
-//! pub struct Post {
+//! struct Post {
 //!     id: u16,
 //!     title: String,
 //!     approved: bool,
@@ -43,11 +42,14 @@
 //! }
 //! ```
 //!
-//! You can use these functions in factory definition.
+//! If you want to use factories out of modules, you need to make factories public.
+//! For more information, please see [this example](https://github.com/TaKO8Ki/beaver/blob/master/examples/public_factory.rs).
+//!
+//! You can use the following functions in factory definition.
 //! - [sequence](factory/fn.sequence.html): If you want to use a sequence number, you can use this function.
 //! - [sequence_a](factory/fn.sequence_a.html): If you want to use a sequence letter, you can use this function.
 //!
-//! You can use your factory like the following.
+//! ### Build structs
 //! ```
 //! use serde::{Deserialize, Serialize};
 //!
@@ -81,7 +83,7 @@
 //!         let post_factory = PostFactory::new();
 //!         let post1 = post_factory.build(|_| {});
 //!         let post2 = post_factory.build(|_| {});
-//!         // overriding attributes of a factory
+//!         // override attributes of a factory
 //!         let post3 = post_factory.build(|post| {
 //!             post.id = 1024;
 //!             post.title = "foo bar".to_string()
@@ -94,8 +96,6 @@
 //! }
 //! ```
 //!
-//! If you want to use factories out of modules, you need to define factories as public.
-//! For more information, please see [this example](https://github.com/TaKO8Ki/beaver/blob/master/examples/public_factory.rs).
 
 mod factory;
 mod macros;

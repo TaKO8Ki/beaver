@@ -1,42 +1,37 @@
 /// Defines a [Factory](struct.Factory.html).
 ///
-/// Example usage
-/// -------------
+/// # Usage
 /// ```rust
-/// use chrono::{NaiveDate, NaiveDateTime};
 /// use serde::{Deserialize, Serialize};
 ///
 /// #[derive(Serialize, Deserialize)]
-/// pub struct Post {
+/// struct Post {
 ///     id: u16,
 ///     title: String,
 ///     approved: bool,
-///     created_at: NaiveDateTime,
 /// }
 ///
 /// beaver::define! {
 ///     PostFactory (Post) {
 ///         id -> |n| n,
-///         title -> |n| format!("{}", n),
+///         title -> |n| format!("post-{}", n),
 ///         approved -> |_| false,
-///         created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
 ///     }
 /// }
 /// ```
 ///
-/// If you want to use sub factory, you can use `build(n)` like the following:
-///
+/// If you want to use a sub factory, you can use `build(n)` like the following. ([Example](https://github.com/TaKO8Ki/beaver/blob/master/examples/sub_factory.rs))
 /// ```rust
 /// use serde::{Deserialize, Serialize};
 ///
 /// #[derive(Serialize, Deserialize)]
-/// pub struct File {
+/// struct File {
 ///     id: u16,
 ///     path: String,
 /// }
 ///
 /// #[derive(Serialize, Deserialize)]
-/// pub struct User {
+/// struct User {
 ///     id: u16,
 ///     name: String,
 ///     file: File,
@@ -58,14 +53,12 @@
 /// }
 /// ```
 ///
-/// If you want to use a vector of sub factories, you can use `build_list(number, n)` like the following:
-///
+/// If you want to use a vector of sub factories, you can use `build_list(number, n)` like the following. ([Example](https://github.com/TaKO8Ki/beaver/blob/master/examples/sub_factory_vector.rs))
 /// ```rust
-/// use chrono::{NaiveDate, NaiveDateTime};
 /// use serde::{Deserialize, Serialize};
 ///
 /// #[derive(Serialize, Deserialize)]
-/// pub struct Post {
+/// struct Post {
 ///     id: u16,
 ///     title: String,
 ///     approved: bool,
@@ -73,7 +66,7 @@
 /// }
 ///
 /// #[derive(Serialize, Deserialize)]
-/// pub struct Tag {
+/// struct Tag {
 ///     id: u16,
 ///     name: String,
 /// }
@@ -94,6 +87,29 @@
 ///     }
 /// }
 /// ```
+///
+/// If you want to use factories out of modules, you need to make factories public. ([Example](https://github.com/TaKO8Ki/beaver/blob/master/examples/public_factory.rs))
+/// ```rust
+/// use serde::{Deserialize, Serialize};
+///
+/// #[derive(Serialize, Deserialize)]
+/// // `Post` needs to be public.
+/// pub struct Post {
+///     id: u16,
+///     title: String,
+///     approved: bool,
+/// }
+///
+/// beaver::define! {
+///     // `PostFactory` needs to be public.
+///     pub PostFactory (Post) {
+///         id -> |n| n,
+///         title -> |n| format!("post-{}", n),
+///         approved -> |_| false,
+///     }
+/// }
+/// ```
+
 #[macro_export]
 macro_rules! define {
     ($($tokens:tt)*) => {

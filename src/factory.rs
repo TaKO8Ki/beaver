@@ -34,7 +34,7 @@ where
 /// use serde::{Deserialize, Serialize};
 ///
 /// #[derive(Serialize, Deserialize)]
-/// pub struct Post {
+/// struct Post {
 ///     id: u16,
 ///     title: String,
 ///     approved: bool,
@@ -44,7 +44,8 @@ where
 /// beaver::define! {
 ///     PostFactory (Post) {
 ///         id -> |n| n,
-///         // First post's title is "post-100". Second post's title is "post-101".
+///         // First post's title: "post-100"
+///         // Second post's title: "post-101"
 ///         title -> |n| format!("post-{}", beaver::sequence(100, n)),
 ///         approved -> |_| false,
 ///         created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
@@ -68,7 +69,7 @@ pub fn sequence(from: u16, n: u16) -> u16 {
 /// use serde::{Deserialize, Serialize};
 ///
 /// #[derive(Serialize, Deserialize)]
-/// pub struct Post {
+/// struct Post {
 ///     id: u16,
 ///     title: String,
 ///     approved: bool,
@@ -99,9 +100,9 @@ pub fn sequence_a(from: &str, n: u16) -> String {
 /// Converts a number to Excel like base 26.
 ///
 /// # Example
-/// - When n is 0, this function returns "a".
-/// - When n is 25, this function returns "z".
-/// - When n is 26, this function returns "aa".
+/// - When `n` is 0, this function returns "a".
+/// - When `n` is 25, this function returns "z".
+/// - When `n` is 26, this function returns "aa".
 fn to_alphabet(n: u128) -> String {
     if n > 25 {
         format!(
