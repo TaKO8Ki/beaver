@@ -14,7 +14,7 @@
 
 ```toml
 [dependencies]
-beaver = "0.1.0"
+beaver = "0.1.0-beta"
 serde = { version = "1.0", features = ["derive"] }
 ```
 
@@ -22,7 +22,7 @@ If you want to use [chrono](https://docs.rs/chrono/) for your struct fields, `Ca
 
 ```toml
 [dependencies]
-beaver = "0.1.0"
+beaver = "0.1.0-beta"
 serde = { version = "1.0", features = ["derive"] }
 # you need `serde` feature.
 chrono = { version = "0.4", features = ["serde"] }
