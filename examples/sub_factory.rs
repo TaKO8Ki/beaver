@@ -18,7 +18,7 @@ mod factory {
     use crate::User;
 
     beaver::define! {
-        UserFactory (User) {
+        pub UserFactory (User) {
             id -> |n| n,
             name -> |n| format!("user-{}", n),
             file -> |n| FileFactory::build(n),
@@ -26,7 +26,7 @@ mod factory {
     }
 
     beaver::define! {
-        FileFactory (File) {
+        pub FileFactory (File) {
             id -> |n| n,
             path -> |n| format!("path/to/file-{}", n),
         }

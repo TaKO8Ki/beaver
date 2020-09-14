@@ -19,7 +19,7 @@ mod factory {
     use crate::Tag;
 
     beaver::define! {
-        PostFactory (Post) {
+        pub PostFactory (Post) {
             id -> |n| n,
             title -> |n| format!("post-{}", n),
             approved -> |_| true,

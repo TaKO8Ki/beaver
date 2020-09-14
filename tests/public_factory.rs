@@ -2,7 +2,7 @@ use chrono::{NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Post {
+pub struct Post {
     id: u16,
     title: String,
     approved: bool,
@@ -12,13 +12,13 @@ struct Post {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct File {
+pub struct File {
     id: u16,
     path: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Tag {
+pub struct Tag {
     id: u16,
     name: String,
 }
@@ -46,33 +46,40 @@ impl PartialEq for File {
     }
 }
 
-beaver::define! {
-    PostFactory (Post) {
-        id -> |n| n,
-        title -> |n| format!("post-{}", n),
-        approved -> |_| false,
-        file -> |n| FileFactory::build(n),
-        tags -> |n| TagFactory::build_list(3, n),
-        created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+mod factory {
+    use super::{File, Post, Tag};
+    use chrono::NaiveDate;
+    // factory definition
+    beaver::define! {
+        pub PostFactory (Post) {
+            id -> |n| n,
+            title -> |n| format!("post-{}", n),
+            approved -> |_| false,
+            file -> |n| FileFactory::build(n),
+            tags -> |n| TagFactory::build_list(3, n),
+            created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
+        }
     }
-}
 
-beaver::define! {
-    FileFactory (File) {
-        id -> |n| n,
-        path -> |n| format!("path/to/file-{}", n),
+    beaver::define! {
+        pub FileFactory (File) {
+            id -> |n| n,
+            path -> |n| format!("path/to/file-{}", n),
+        }
     }
-}
 
-beaver::define! {
-    TagFactory (Tag) {
-        id -> |n| n,
-        name -> |n| format!("tag-{}", n),
+    beaver::define! {
+        TagFactory (Tag) {
+            id -> |n| n,
+            name -> |n| format!("tag-{}", n),
+        }
     }
 }
 
 #[test]
 fn is_builds_struct() {
+    use factory::{FileFactory, PostFactory};
+
     let file_factory = FileFactory::new();
     let post_factory = PostFactory::new();
 

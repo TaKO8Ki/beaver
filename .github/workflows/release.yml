@@ -13,6 +13,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: check
+
   release:
     name: Cargo publish
     runs-on: ubuntu-20.04
