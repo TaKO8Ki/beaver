@@ -1,8 +1,7 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
-// Post needs both of Serialize and Deserialize
-// and needs to be public.
+// `Post` needs to be public.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Post {
     id: u16,
@@ -16,7 +15,7 @@ mod factory {
     use chrono::NaiveDate;
 
     beaver::define! {
-        // PostFactory needs to be public.
+        // `PostFactory` needs to be public.
         pub PostFactory (Post) {
             id -> |n| n,
             title -> |n| format!("{}", n),
