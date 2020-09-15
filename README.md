@@ -99,7 +99,7 @@ post_factory.build(|post| {
 
 - [Public factory](#public-factory)
 - [Sub factory vector](#sub-factory-vector)
-- [Others](#othrers)
+- [Others](#others)
 
 ### [Public factory](examples/public_factory.rs)
 
