@@ -75,6 +75,7 @@ beaver::define! {
 ```
 
 This `define!` macro defines a struct, `PostFactory` as a factory.
+If you want to use factories outside modules, you need to make both of factories and structs public. For more information, please see [this example](examples/public_factory.rs).
 
 ### Build structs
 
