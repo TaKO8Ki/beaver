@@ -88,7 +88,7 @@
 /// }
 /// ```
 ///
-/// If you want to use factories out of modules, you need to make factories public. ([Example](https://github.com/TaKO8Ki/beaver/blob/master/examples/public_factory.rs))
+/// If you want to use factories outside modules, you need to make factories public. ([Example](https://github.com/TaKO8Ki/beaver/blob/master/examples/public_factory.rs))
 /// ```rust
 /// use serde::{Deserialize, Serialize};
 ///
