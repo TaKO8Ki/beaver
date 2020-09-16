@@ -219,6 +219,10 @@ Post { id: 5, title: "post-5", approved: true, tags: [Tag { id: 13, name: "tag-1
 - [simple factory](examples/simple_factory.rs)
 - [sub factory](examples/sub_factory.rs)
 
+## Contribution
+
+Contributions, issues and pull requests are welcome!
+
 ## License
 
 Licensed under MIT license ([LICENSE](LICENSE)).
