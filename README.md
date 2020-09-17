@@ -216,8 +216,8 @@ Post { id: 5, title: "post-5", approved: true, tags: [Tag { id: 13, name: "tag-1
 ```
 ### Others
 
-- [simple factory](examples/simple_factory.rs)
-- [sub factory](examples/sub_factory.rs)
+- [Simple factory](examples/simple_factory.rs)
+- [Sub factory](examples/sub_factory.rs)
 
 ## Contribution
 
