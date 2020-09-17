@@ -75,6 +75,7 @@ beaver::define! {
 ```
 
 This `define!` macro defines a struct, `PostFactory` as a factory.
+If you want to use factories outside modules, you need to make both of factories and structs public. For more information, please see this [example](examples/public_factory.rs).
 
 ### Build structs
 
@@ -124,7 +125,7 @@ mod factory {
         // `PostFactory` needs to be public.
         pub PostFactory (Post) {
             id -> |n| n,
-            title -> |n| format!("{}", n),
+            title -> |n| format!("post-{}", n),
             approved -> |_| false,
             created_at -> |_| NaiveDate::from_ymd(2020, 1, 1).and_hms(0, 0, 0),
         }
@@ -144,8 +145,8 @@ fn main() {
 Output:
 
 ```sh
-Post { id: 1, title: "1", approved: false, created_at: 2020-01-01T00:00:00 }
-Post { id: 2, title: "2", approved: false, created_at: 2020-01-01T00:00:00 }
+Post { id: 1, title: "post-1", approved: false, created_at: 2020-01-01T00:00:00 }
+Post { id: 2, title: "post-2", approved: false, created_at: 2020-01-01T00:00:00 }
 ```
 
 ### [Sub factory vector](examples/sub_factory_vector.rs)
@@ -217,6 +218,10 @@ Post { id: 5, title: "post-5", approved: true, tags: [Tag { id: 13, name: "tag-1
 
 - [simple factory](examples/simple_factory.rs)
 - [sub factory](examples/sub_factory.rs)
+
+## Contribution
+
+Contributions, issues and pull requests are welcome!
 
 ## License
 

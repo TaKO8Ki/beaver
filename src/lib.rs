@@ -42,8 +42,8 @@
 //! }
 //! ```
 //!
-//! If you want to use factories out of modules, you need to make factories public.
-//! For more information, please see [this example](https://github.com/TaKO8Ki/beaver/blob/master/examples/public_factory.rs).
+//! If you want to use factories outside modules, you need to make factories public.
+//! For more information, please see this [example](https://github.com/TaKO8Ki/beaver/blob/master/examples/public_factory.rs).
 //!
 //! You can use the following functions in factory definition.
 //! - [sequence](factory/fn.sequence.html): If you want to use a sequence number, you can use this function.
