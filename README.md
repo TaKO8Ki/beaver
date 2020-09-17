@@ -145,8 +145,8 @@ fn main() {
 Output:
 
 ```sh
-Post { id: 1, title: "1", approved: false, created_at: 2020-01-01T00:00:00 }
-Post { id: 2, title: "2", approved: false, created_at: 2020-01-01T00:00:00 }
+Post { id: 1, title: "post-1", approved: false, created_at: 2020-01-01T00:00:00 }
+Post { id: 2, title: "post-2", approved: false, created_at: 2020-01-01T00:00:00 }
 ```
 
 ### [Sub factory vector](examples/sub_factory_vector.rs)
