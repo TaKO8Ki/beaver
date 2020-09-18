@@ -14,7 +14,7 @@
 
 ```toml
 [dependencies]
-beaver = "0.1.0-beta"
+beaver = "0.1.0"
 serde = { version = "1.0", features = ["derive"] }
 ```
 
@@ -22,7 +22,7 @@ If you want to use [chrono](https://docs.rs/chrono/) for your struct fields, `Ca
 
 ```toml
 [dependencies]
-beaver = "0.1.0-beta"
+beaver = "0.1.0"
 serde = { version = "1.0", features = ["derive"] }
 # you need `serde` feature.
 chrono = { version = "0.4", features = ["serde"] }
@@ -216,8 +216,8 @@ Post { id: 5, title: "post-5", approved: true, tags: [Tag { id: 13, name: "tag-1
 ```
 ### Others
 
-- [simple factory](examples/simple_factory.rs)
-- [sub factory](examples/sub_factory.rs)
+- [Simple factory](examples/simple_factory.rs)
+- [Sub factory](examples/sub_factory.rs)
 
 ## Contribution
 
