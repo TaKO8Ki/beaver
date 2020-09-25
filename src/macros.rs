@@ -165,7 +165,7 @@ macro_rules! beaver_parse {
     };
 
     (
-        tokens = [{$($fname:ident -> $fvalue:expr),*,}],
+        tokens = [{$($fname:ident -> $fvalue:expr),*$(,)?}],
         factory_name = $factory_name:tt,
         public = $public:ident,
         struct_name = $struct_name:tt,
